@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import events from "./events.jsx";
-import profile from "./profile.jsx";
+import Events from "./events.jsx";
+import Profile from "./profile.jsx";
 import "./App.css"
 
 export default function App() {
@@ -11,8 +11,8 @@ export default function App() {
                 <Link to ="/Profile">Profile</Link>
             </nav>
             <Routes>
-                <Route path="/events.jsx" element={<events />}/>
-                <Route path="/profile.jsx" element={<profile />}/>
+                <Route path="/Events" element={<Events />}/>
+                <Route path="/Profile" element={<Profile />}/>
             </Routes>
         </BrowserRouter>
     );
