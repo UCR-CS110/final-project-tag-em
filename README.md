@@ -2,7 +2,7 @@
 [![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=23901319&assignment_repo_type=AssignmentRepo)
 
 <h1> Project Description </h1>
-Tag em is a networking platform that allows recruiters to easily match good fit candidates with job postings. It works by creating an interface where users can privately “tag” people into fits that they would be good for based on their personal knowledge of the connection. Then, when users are looking for hirees, they are able to selectively broadcast their positional opening to good fits within their network.
+Tag'em is a networking platform that allows recruiters to easily match good fit candidates with job postings. It works by creating an interface where users can privately “tag” people into fits that they would be good for based on their personal knowledge of the connection. Then, when users are looking for hirees, they are able to selectively broadcast their positional opening to good fits within their network.
 
 <h1> Deployment Instructions </h1>
 In order to deploy our code, simply clone the repo, then change directories to the "TagEm" folder and run the commands "npm install" followed by "npm run dev". This will provide a locally hosted link to view our website.
