@@ -33,6 +33,8 @@ const ProfilePage = () => {
     ]);
 
     const handleInputChange = (e) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        console.log(JSON.parse(localStorage.getItem("user")));
         const { name, value } = e.target;
         setProfile(prevProfile => ({
             ...prevProfile,

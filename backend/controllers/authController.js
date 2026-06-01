@@ -14,6 +14,7 @@ export async function createUser(req, res) {
                 const hashed_password = await bcrypt.hash(user_password, 10);
                 await pool.query("INSERT INTO users(name, email, password) VALUES($1, $2, $3)",
                     [user_name, user_email, hashed_password]);
+                    console.log("User created successfully");
                 return res.status(201).json({message: "User created successfully"});
             } else {
                 return res.status(409).json({message: "Email already exists"});
