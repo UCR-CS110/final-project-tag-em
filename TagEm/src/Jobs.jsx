@@ -1,20 +1,31 @@
 import { useState } from "react";
 import "./Jobs.css";
 
+const connections = [
+  "Daniyal Bhat",
+  "Gabriel Allaf",
+  "Jayanth Samala",
+  "..."
+];
+
 const startingJobs = [
   {
     id: 1,
     title: "Frontend Developer Intern",
     company: "TechBridge",
     location: "Remote",
+    description: "Build React components and help improve the company dashboard.",
     sender: "Maya Chen",
+    taggedContacts: ["Alex Rivera"],
   },
   {
     id: 2,
     title: "Software Engineering Intern",
     company: "CloudWorks",
     location: "Los Angeles",
+    description: "Work with backend APIs and database systems.",
     sender: "Jordan Lee",
+    taggedContacts: ["Sam Patel"],
   },
 ];
 
@@ -24,6 +35,16 @@ export default function Jobs() {
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
   const [location, setLocation] = useState("");
+  const [description, setDescription] = useState("");
+  const [selectedContacts, setSelectedContacts] = useState([]);
+
+  function handleContactChange(contact) {
+    if (selectedContacts.includes(contact)) {
+      setSelectedContacts(selectedContacts.filter((person) => person !== contact));
+    } else {
+      setSelectedContacts([...selectedContacts, contact]);
+    }
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -33,7 +54,9 @@ export default function Jobs() {
       title,
       company,
       location,
+      description,
       sender: "You",
+      taggedContacts: selectedContacts,
     };
 
     setJobs([newJob, ...jobs]);
@@ -41,6 +64,8 @@ export default function Jobs() {
     setTitle("");
     setCompany("");
     setLocation("");
+    setDescription("");
+    setSelectedContacts([]);
   }
 
   return (
@@ -75,7 +100,29 @@ export default function Jobs() {
             required
           />
 
-          <button type="submit">Post Job</button>
+          <textarea
+            placeholder="Job details"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+
+          <div className="connections-box">
+            <h3>Tag connections who may be a good fit</h3>
+
+            {connections.map((contact) => (
+              <label className="connection-option" key={contact}>
+                <input
+                  type="checkbox"
+                  checked={selectedContacts.includes(contact)}
+                  onChange={() => handleContactChange(contact)}
+                />
+                {contact}
+              </label>
+            ))}
+          </div>
+
+          <button type="submit">Post and Share Job</button>
         </form>
       </section>
 
@@ -95,9 +142,17 @@ export default function Jobs() {
                 <strong>Location:</strong> {job.location}
               </p>
 
+              <p>{job.description}</p>
+
               <p>
                 <strong>Sent by:</strong> {job.sender}
               </p>
+
+              {job.taggedContacts.length > 0 && (
+                <p>
+                  <strong>Forwarded to:</strong> {job.taggedContacts.join(", ")}
+                </p>
+              )}
             </article>
           ))}
         </div>

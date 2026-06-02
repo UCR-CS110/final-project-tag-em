@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import Jobs from "./Jobs.jsx";
 import Meetups from "./Meetups.jsx";
 import Connections from "./Connections.jsx";
@@ -8,15 +8,29 @@ import Signup from "./Pages/Signup.jsx";
 
 import "./App.css"
 
-export default function App() {
+function NavBar() {
+    const location = useLocation();
+    if (location.pathname === "/" || location.pathname === "/signup") {
+        return;
+    }
     return (
-        <BrowserRouter>
-            <nav>
+        <nav>
+            <Link to ="/Jobs" className="logoLink"><img src="/tagEmLogo.svg" alt="TagEm Logo" /></Link>
+
+            <div className="navLinks">
                 <Link to ="/Jobs">Jobs</Link>
                 <Link to ="/Meetups">Meetups</Link>
                 <Link to ="/Connections">Connections</Link>
                 <Link to ="/Profile">Profile</Link>
-            </nav>
+            </div>
+        </nav>
+    );   
+}
+
+export default function App() {
+    return (
+        <BrowserRouter>
+            <NavBar />
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
