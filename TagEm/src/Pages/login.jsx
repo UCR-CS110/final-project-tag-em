@@ -6,8 +6,10 @@ function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   async function handleSubmit(e){
     e.preventDefault();
+    setError("");
 
     const userInfo = {
       email,
@@ -24,11 +26,16 @@ function Login() {
         body: JSON.stringify(userInfo) 
       });
       const data = await response.json();
+      if(!response.ok){
+        setError(data.message || "Login failed");
+        return;
+      }
       localStorage.setItem("user", JSON.stringify(data));
       console.log("hi");
       navigate("/Profile");
     } catch(err) {
       console.log("Error sending data:", err);
+      setError("An error occurred. Please recheck your login credentials and try again.");
     }
   }
   return (
@@ -36,6 +43,7 @@ function Login() {
       <div className="auth-card">
         <h1>Welcome back</h1>
         <p>Log in to continue building your network.</p>
+        {error && <div className="AuthError">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <label>Email</label>

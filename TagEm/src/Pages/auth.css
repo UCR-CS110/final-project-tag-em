@@ -76,3 +76,10 @@
   font-weight: bold;
   text-decoration: none;
 }
+.AuthError {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
