@@ -10,5 +10,28 @@ export async function getUsers(req, res) {
         console.log(err);
         res.status(500).json({message: "Database error"});
     }
-    
+}
+export async function getUserProfile(req, res) {
+    try {
+        const userEmail = req.params.email; 
+        const result = await pool.query("SELECT id, name, email, genderIdentity, occupation, bio, resumeAttached, profilePicUrl FROM users WHERE email = $1", [userEmail]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const user = result.rows[0];
+        const profileData = {
+            name: user.name,
+            email: user.email,
+            genderIdentity: user.genderidentity,
+            occupation: user.occupation,
+            bio: user.bio,
+            resumeAttached: user.resumeattached,
+            profilePicUrl: user.profilepicurl,
+            networkConnections: 124
+        };
+        return res.status(200).json(profileData);
+    } catch (err) {
+        console.error("Error fetching user profile:", err);
+        return res.status(500).json({ message: "Database error" });
+    }
 }

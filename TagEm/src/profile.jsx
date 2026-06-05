@@ -1,17 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './profile.css';
 
 const ProfilePage = () => {
     const [profile, setProfile] = useState({
-        name: "John Doe",
-        genderIdentity: "Pronoun/Pronoun",
-        occupation: "UCR Student",
-        bio: "I love Scotty the Bear!",
-        resumeAttached: true,
-        profilePicUrl: "https://images.pexels.com/photos/35796668/pexels-photo-35796668.jpeg",
-        networkConnections: 124
+        name: "Loading...",
+        genderIdentity: "",
+        occupation: "",
+        bio: "",
+        resumeAttached: false,
+        profilePicUrl: "",
+        networkConnections: 0
     });
-
+    useEffect(() => {
+        async function fetchProfileData() {
+            const storedUserString = localStorage.getItem("user");
+            if (!storedUserString) {
+                console.log("No user is logged in");
+                return; 
+            }
+            const storedUser = JSON.parse(storedUserString);
+            try {
+                const response = await fetch(`http://localhost:5001/api/users/profile/${storedUser.email}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    setProfile(data);
+                } else {
+                    console.error("Failed to fetch profile");
+                }
+            } catch (err) {
+                console.error("Network error:", err);
+            }
+        }
+        fetchProfileData();
+    }, []);
     const [isEditingDetails, setIsEditingDetails] = useState(false);
     const [isEditingBio, setIsEditingBio] = useState(false);
     const [tagEms, setTagEms] = useState([ // TBD: Actual States Need to Get Pulled From Backend
