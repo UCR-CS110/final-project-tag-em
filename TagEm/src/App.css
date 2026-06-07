@@ -12,6 +12,9 @@ nav {
   padding: 18px 20px;
   background-color: white;
   border-bottom: 1px solid #dddddd;
+  height: 30px;
+  margin-top: -5px;
+  margin-bottom: -10px;
 }
 
 .logoLink {
@@ -26,7 +29,8 @@ nav {
 
 .navLinks {
   display: flex;
-  gap: 25px;
+  gap: 60px;
+  position: absolute;
 }
 
 nav a {
@@ -40,3 +44,14 @@ nav a:hover {
   color: #0077ff;
   text-decoration: underline;
 }
+
+.nav-profile-pic{
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.profile-menu {
+    margin-left: auto;
+}
+

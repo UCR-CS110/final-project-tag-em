@@ -1,20 +1,26 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './profile.css';
 
 const ProfilePage = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log(user);
     const [profile, setProfile] = useState({
-        name: "John Doe",
-        genderIdentity: "Pronoun/Pronoun",
-        occupation: "UCR Student",
-        bio: "I love Scotty the Bear!",
-        resumeAttached: true,
-        profilePicUrl: "https://images.pexels.com/photos/35796668/pexels-photo-35796668.jpeg",
-        networkConnections: 124
+        name: "",
+        genderIdentity: "",
+        occupation: "",
+        profilePicUrl: null,
+        bio: "",
+        resumeattached: null
     });
 
+    console.log(user);
     const [isEditingDetails, setIsEditingDetails] = useState(false);
     const [isEditingBio, setIsEditingBio] = useState(false);
-    const [tagEms, setTagEms] = useState([ // TBD: Actual States Need to Get Pulled From Backend
+    const [isEditingResume, setIsEditingResume] = useState(false);
+    const [error, setError] = useState("");
+    const [image, handleImage] = useState(null);
+    const [resume, setResume] = useState(null);
+    const [tagEms, setTagEms] = useState([
         {
             id: 1,
             content: "Omg Scotty the Bear wowowo",
@@ -33,20 +39,61 @@ const ProfilePage = () => {
     ]);
 
     const handleInputChange = (e) => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        console.log(JSON.parse(localStorage.getItem("user")));
-        const { name, value } = e.target;
-        setProfile(prevProfile => ({
-            ...prevProfile,
-            [name]: value
-        }));
+        console.log("hi");
+        setProfile({
+            ...profile,
+            [e.target.name]: e.target.value
+        });
     };
 
-    const handleSaveDetails = () => {
-        //backend apicall tbd
+    const handleSaveDetails = async () => {
+        console.log("BUTTON CLICKED");
+        const formData = new FormData();
+        formData.append("name", profile.name);
+        formData.append("genderIdentity", profile.genderIdentity);
+        formData.append("occupation", profile.occupation);
+        if (image) {
+            formData.append("image", image);
+        }
+        formData.append("bio", profile.bio);
+        if (resume) {
+            formData.append("resume", resume);
+        }
+
+        const API_URL = `http://localhost:5001/api/Profile/${user.id}`;
+        try{
+            const response = await fetch(API_URL, {
+                method: 'PUT',
+                body: formData
+            });
+
+            const data = await response.json();
+            if(!response.ok){
+                console.log("error");
+                return;
+            }
+            setProfile(data);
+        } catch(err){
+            console.log(err);
+        }
+
         setIsEditingDetails(false);
         setIsEditingBio(false);
+        setIsEditingResume(false);
     };
+    const handleFetch = async () => {
+        const API_URL = `http://localhost:5001/api/Profile/${user.id}`;
+        console.log(API_URL);
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        setProfile(data);
+        console.log("FETCHED PROFILE:", data);
+        console.log(profile);
+    }
+
+    useEffect(() => {
+        handleFetch()
+    }, [])
 // Need to create a 'Create Tag-Site' (idk something that'll let people create 'tags' )
     return (
         <div className="profile-page">
@@ -54,7 +101,7 @@ const ProfilePage = () => {
 
                 <header className="profile-header">
                     <img
-                        src={profile.profilePicUrl}
+                        src={image ? URL.createObjectURL(image) : profile.profilePicUrl || undefined}
                         alt="Profile"
                         className="profile-pic"
                     />
@@ -64,7 +111,7 @@ const ProfilePage = () => {
                                 <input
                                     type="text"
                                     name="name"
-                                    value={profile.name}
+                                    value={profile.name || ""}
                                     onChange={handleInputChange}
                                     className="edit-input"
                                     placeholder="Full Name"
@@ -72,7 +119,7 @@ const ProfilePage = () => {
                                 <input
                                     type="text"
                                     name="genderIdentity"
-                                    value={profile.genderIdentity}
+                                    value={profile.genderIdentity || ""}
                                     onChange={handleInputChange}
                                     className="edit-input"
                                     placeholder="Gender Identity"
@@ -80,10 +127,19 @@ const ProfilePage = () => {
                                 <input
                                     type="text"
                                     name="occupation"
-                                    value={profile.occupation}
+                                    value={profile.occupation || ""}
                                     onChange={handleInputChange}
                                     className="edit-input"
                                     placeholder="Occupation"
+                                />
+                                <input
+                                    type="file"
+                                    name="Profile Picture"
+                                    accept="image/png, image/jpeg"
+                                    onChange={(e)=>{
+                                        console.log(e.target.files[0]);
+                                        handleImage(e.target.files[0]);}}
+                                    className="edit-input"
                                 />
                             </div>
                         ) : (
@@ -99,7 +155,11 @@ const ProfilePage = () => {
                             Save Details
                         </button>
                     ) : (
-                        <button className="edit-button" onClick={() => setIsEditingDetails(true)}>
+                        <button className="edit-button" onClick={() => {
+                            console.log("edit clicked");
+                            setIsEditingDetails(true);
+                            }}
+                        >
                             Edit Details
                         </button>
                     )}
@@ -107,43 +167,63 @@ const ProfilePage = () => {
 
                 <section className="profile-section">
                     <div className="section-header">
-                        <h2>Bio</h2>
-                        {isEditingBio ? (
-                            <button className="edit-button save-button" onClick={handleSaveDetails}>
-                                Save Bio
-                            </button>
-                        ) : (
-                            <button className="edit-button" onClick={() => setIsEditingBio(true)}>
-                                Edit Bio
-                            </button>
-                        )}
-                    </div>
-                    {isEditingBio ? (
-                        <div className="edit-form">
-                            <input
-                                name="bio"
-                                value={profile.bio}
-                                onChange={handleInputChange}
-                                className="edit-input"
-                                placeholder="Tell us about yourself..."
-                            />
+                            <h2>Bio</h2>
+                            {isEditingBio ? (
+                                <button className="edit-button save-button" onClick={handleSaveDetails}>
+                                    Save Bio
+                                </button>
+                            ) : (
+                                <button className="edit-button" onClick={() => setIsEditingBio(true)}>
+                                    Edit Bio
+                                </button>
+                            )}
                         </div>
-                    ) : (
-                        <p>{profile.bio}</p>
-                    )}
+                            {isEditingBio ? (
+                                <input
+                                    type="text"
+                                    name="bio"
+                                    value={profile.bio || ""}
+                                    onChange={handleInputChange}
+                                    className="edit-input"
+                                    placeholder="Tell us about yourself..."
+                                />
+                            ) : (
+                                <p className="bio-text">{profile.bio}</p>
+                            )}
                 </section>
+
                 <section className="profile-section">
                     <div className="section-header">
                         <h2>Resume</h2>
-                        <button className="edit-button">Change Resume</button>
                     </div>
-                    <p>
-                        {profile.resumeAttached // Need to link to resume from backend
-                            ? "📄 Resume attached (Alex_Johnson_Resume.pdf)"
-                            : "No resume attached."}
-                    </p>
+                    {isEditingResume ? (
+                                <button className="edit-button save-button" onClick={handleSaveDetails}>
+                                    Save Resume
+                                </button>
+                            ) : (
+                                <button className="edit-button" onClick={() => setIsEditingResume(true)}>
+                                    Change Resume
+                                </button>
+                            )}
+                    {isEditingResume ? (
+                        <input
+                            type="file"
+                            name="resume"
+                            onChange={(e) => setResume(e.target.files[0])}
+                            className="edit-input"
+                            accept=".pdf,.doc,.docx"
+                        />
+                    ) : (
+                        <p className="resume-text">
+                            <a 
+                                href={`http://localhost:5001${profile.resumeattached}`} 
+                                target="_blank"
+                            >
+                                Resume
+                            </a>
+                        </p>
+                    )}
                 </section>
-
                 <section className="profile-section">
                     <div className="section-header">
                         <h2>Network</h2>
@@ -160,7 +240,7 @@ const ProfilePage = () => {
                     {tagEms.map((tagEm) => (
                         <article key={tagEm.id} className="tag-em-post">
                             <div className="tag-em-avatar">
-                                <img src={profile.profilePicUrl} alt={profile.name} />
+                                <img src={image ? URL.createObjectURL(image) : profile.profilePicUrl || undefined} alt={profile.name} />
                             </div>
                             <div className="tag-em-content">
                                 <div className="tag-em-meta">

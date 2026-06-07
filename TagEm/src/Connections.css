@@ -107,3 +107,39 @@
   color: #555;
   border: 1px solid #aaa;
 }
+
+.Search{
+  display: flex;
+  justify-content: center;
+  position: relative;
+
+}
+
+.input{
+  width: 500px;
+  height: 30px;
+  border-radius: 30px;
+  border: ghostwhite;
+  padding-left: 20px;
+}
+
+.Dropdown {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 37px;
+  z-index: 1;
+  width: 500px;
+  border-radius: 20px;
+
+}
+
+.Dropdown h3{
+  padding: 20px;
+  margin: -2px;
+}
+
+.Dropdown h3:hover {
+  background-color: gainsboro;
+}

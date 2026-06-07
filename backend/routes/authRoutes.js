@@ -6,7 +6,11 @@ const router = express.Router();
 
 router.post("/signup", createUser);
 router.post("/login", passport.authenticate("local", {session: false}), (req,res)=>{
-    res.send(req.user);
+    res.json({
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email
+    });
 });
 
 export default router;
