@@ -7,6 +7,12 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [profilePicUrl, setProfilePicUrl] = useState("");
+  const [genderIdentity, setGenderIdentity] = useState("");
+  const [occupation, setOccupation] = useState("");
+  const [bio, setBio] = useState("");
+  const [resumeAttached, setResumeAttached] = useState(false);
 
   async function handleSubmit(e){
     e.preventDefault();
@@ -18,7 +24,12 @@ function Signup() {
     const userInfo = {
       name,
       email,
-      password
+      password,
+      profilePicUrl,
+      genderIdentity,
+      occupation,
+      bio,
+      resumeAttached
     };
     const API_URL = "http://localhost:5001/api/auth/signup"
     try{
@@ -30,16 +41,23 @@ function Signup() {
         body: JSON.stringify(userInfo) 
       });
       const data = await response.json();
-      console.log("Success", data);
+      if (response.ok) {
+        console.log("Success", data);
+        setMessage("Account created successfully!");
+      } else {
+        throw new Error(data.message || "Failed to create account");
+      }
     } catch(err) {
       console.log('Error sending data:', err);
+      setMessage("Error creating account. Please try again.");
     }
   }
   return (
     <div className="auth-page">
       <div className="auth-card">
         <h1>Create account</h1>
-        <p>Join your network and start discovering opportunities.</p>
+        <p> Account Creation Successful! Feel free to log in!</p>
+        {message && <p className="auth-message">{message}</p>}
 
         <form onSubmit={handleSubmit}>
           <label>Full Name</label>
@@ -49,7 +67,41 @@ function Signup() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-
+          <label>Profile Picture URL</label>
+          <input
+            type="text"
+            placeholder="Enter a URL for your profile picture"
+            value={profilePicUrl}
+            onChange={(e) => setProfilePicUrl(e.target.value)}
+          />
+          <label>Pronouns</label>
+          <input
+            type="text"
+            placeholder="Enter your preferred pronouns"
+            value={genderIdentity}
+            onChange={(e) => setGenderIdentity(e.target.value)}
+          />
+          <label>Occupation</label>
+          <input
+            type="text"
+            placeholder="Enter your occupation"
+            value={occupation}
+            onChange={(e) => setOccupation(e.target.value)}
+          />
+          <label>Bio</label>
+          <textarea
+            placeholder="Tell us about yourself"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+          />
+           <label>
+            <input
+              type="checkbox"
+              checked={resumeAttached}
+              onChange={(e) => setResumeAttached(e.target.checked)}
+            />
+            Attach Resume
+          </label>
           <label>Email</label>
           <input
             type="email"

@@ -13,7 +13,30 @@ const ProfilePage = () => {
         resumeattached: null
     });
 
-    console.log(user);
+    useEffect(() => {
+        async function fetchProfileData() {
+            const storedUserString = localStorage.getItem("user");
+            if (!storedUserString) {
+                console.log("No user is logged in");
+                return; 
+            }
+            const storedUser = JSON.parse(storedUserString);
+            try {
+                const response = await fetch(`http://localhost:5001/api/users/profile/${storedUser.email}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    setProfile(data);
+                } else {
+                    console.error("Failed to fetch profile");
+                }
+            } catch (err) {
+                console.error("Network error:", err);
+            }
+        }
+        fetchProfileData();
+    }, []);
+
     const [isEditingDetails, setIsEditingDetails] = useState(false);
     const [isEditingBio, setIsEditingBio] = useState(false);
     const [isEditingResume, setIsEditingResume] = useState(false);
