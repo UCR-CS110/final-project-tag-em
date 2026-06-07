@@ -63,9 +63,20 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eaeaea;
-  padding-bottom: 10px;
-  margin-bottom: 15px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
 }
+
+.section-header h2 {
+  margin-bottom: 4px;
+}
+
+.bio-text {
+  margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 
 .edit-button {
   padding: 6px 12px;
@@ -183,4 +194,5 @@
 }
 
 .action-btn:hover {
-  color: #1d9bf0; }
+  color: #1d9bf0;
+}
