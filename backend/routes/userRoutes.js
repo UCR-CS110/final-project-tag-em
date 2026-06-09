@@ -5,6 +5,6 @@ import {getUserProfile} from "../controllers/userController.js"
 const router = express.Router();
 
 router.get("/", getUsers);
-router.get("/Profile/:email", getUserProfile);
+router.get("/Profile/:id", getUserProfile);
 
 export default router;

@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
-import './profile.css';
+import { useParams } from 'react-router-dom';
+import './Profile.css';
 
 const ProfilePage = () => {
+    const {id} = useParams();
     const user = JSON.parse(localStorage.getItem("user"));
+    const profileId = id || user.id;
     console.log(user);
     const [profile, setProfile] = useState({
         name: "",
@@ -22,7 +25,7 @@ const ProfilePage = () => {
             }
             const storedUser = JSON.parse(storedUserString);
             try {
-                const response = await fetch(`http://localhost:5001/api/users/profile/${storedUser.email}`);
+                const response = await fetch(`http://localhost:5001/api/Profile/${profileId}`);
                 
                 if (response.ok) {
                     const data = await response.json();
@@ -83,7 +86,7 @@ const ProfilePage = () => {
             formData.append("resume", resume);
         }
 
-        const API_URL = `http://localhost:5001/api/Profile/${user.id}`;
+        const API_URL = `http://localhost:5001/api/Profile/${profileId}`;
         try{
             const response = await fetch(API_URL, {
                 method: 'PUT',
@@ -105,7 +108,7 @@ const ProfilePage = () => {
         setIsEditingResume(false);
     };
     const handleFetch = async () => {
-        const API_URL = `http://localhost:5001/api/Profile/${user.id}`;
+        const API_URL = `http://localhost:5001/api/Profile/${profileId}`;
         console.log(API_URL);
         const response = await fetch(API_URL);
         const data = await response.json();
@@ -128,6 +131,7 @@ const ProfilePage = () => {
                         alt="Profile"
                         className="profile-pic"
                     />
+                    {user.id === Number(profileId)?(
                     <div className="header-text">
                         {isEditingDetails ? (
                             <div className="edit-form">
@@ -172,8 +176,14 @@ const ProfilePage = () => {
                                 <p className="profile-occupation">{profile.occupation}</p>
                             </>
                         )}
-                    </div>
-                    {isEditingDetails ? (
+                    </div>):(
+                        <div className="header-text"> 
+                            <h1 className="profile-name">{profile.name}</h1>
+                            <p className="profile-subtext">{profile.genderIdentity}</p>
+                            <p className="profile-occupation">{profile.occupation}</p>
+                        </div>
+                    )}
+                    {user.id === Number(profileId)? (isEditingDetails ? (
                         <button className="edit-button save-button" onClick={handleSaveDetails}>
                             Save Details
                         </button>
@@ -185,13 +195,15 @@ const ProfilePage = () => {
                         >
                             Edit Details
                         </button>
+                    )):(
+                        <button className='connect'>Connect</button>
                     )}
                 </header>
 
                 <section className="profile-section">
                     <div className="section-header">
                             <h2>Bio</h2>
-                            {isEditingBio ? (
+                            {user.id === Number(profileId)?(isEditingBio ? (
                                 <button className="edit-button save-button" onClick={handleSaveDetails}>
                                     Save Bio
                                 </button>
@@ -199,9 +211,9 @@ const ProfilePage = () => {
                                 <button className="edit-button" onClick={() => setIsEditingBio(true)}>
                                     Edit Bio
                                 </button>
-                            )}
+                            )):null}
                         </div>
-                            {isEditingBio ? (
+                            {user.id === Number(profileId)?(isEditingBio ? (
                                 <input
                                     type="text"
                                     name="bio"
@@ -212,14 +224,14 @@ const ProfilePage = () => {
                                 />
                             ) : (
                                 <p className="bio-text">{profile.bio}</p>
-                            )}
+                            )) : (<p className="bio-text">{profile.bio}</p>)}
                 </section>
 
                 <section className="profile-section">
                     <div className="section-header">
                         <h2>Resume</h2>
                     </div>
-                    {isEditingResume ? (
+                    {user.id === Number(profileId)?(isEditingResume ? (
                                 <button className="edit-button save-button" onClick={handleSaveDetails}>
                                     Save Resume
                                 </button>
@@ -227,8 +239,8 @@ const ProfilePage = () => {
                                 <button className="edit-button" onClick={() => setIsEditingResume(true)}>
                                     Change Resume
                                 </button>
-                            )}
-                    {isEditingResume ? (
+                            )):null}
+                    {user.id === Number(profileId)?(isEditingResume ? (
                         <input
                             type="file"
                             name="resume"
@@ -245,12 +257,21 @@ const ProfilePage = () => {
                                 Resume
                             </a>
                         </p>
-                    )}
+                    )):(<p className="resume-text">
+                            <a 
+                                href={`http://localhost:5001${profile.resumeattached}`} 
+                                target="_blank"
+                            >
+                                Resume
+                            </a>
+                        </p>)}
                 </section>
                 <section className="profile-section">
                     <div className="section-header">
                         <h2>Network</h2>
-                        <button className="edit-button">Manage Network</button>
+                        {user.id === Number(profileId)? (
+                            <button className="edit-button">Manage Network</button>
+                        ): null}
                     </div>
                     <p>You have {profile.networkConnections} people in your network available to tag.</p>
                 </section>

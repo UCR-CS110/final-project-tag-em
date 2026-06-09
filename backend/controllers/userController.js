@@ -13,8 +13,8 @@ export async function getUsers(req, res) {
 }
 export async function getUserProfile(req, res) {
     try {
-        const userEmail = req.params.email; 
-        const result = await pool.query("SELECT id, name, email, genderIdentity, occupation, bio, resumeAttached, profilePicUrl FROM users WHERE email = $1", [userEmail]);
+        const userId = req.params.id; 
+        const result = await pool.query("SELECT id, name, email, genderIdentity, occupation, bio, resumeAttached, profilePicUrl FROM users WHERE id = $1", [userId]);
         if (result.rows.length === 0) {
             return res.status(404).json({ message: "User not found" });
         }

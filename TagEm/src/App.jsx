@@ -66,6 +66,7 @@ export default function App() {
                 <Route path="/Meetups" element={<Meetups />}/>
                 <Route path="/Connections" element={<Connections />}/>
                 <Route path="/Profile" element={<Profile />}/>
+                <Route path="/Profile/:id" element={<Profile />}/>
             </Routes>
         </BrowserRouter>
     );

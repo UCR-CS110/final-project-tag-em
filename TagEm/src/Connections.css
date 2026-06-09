@@ -140,6 +140,19 @@
   margin: -2px;
 }
 
-.Dropdown h3:hover {
+.Dropdown .person:hover {
   background-color: gainsboro;
+}
+
+.person{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-left: 1rem;
+}
+
+.person img{
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
 }

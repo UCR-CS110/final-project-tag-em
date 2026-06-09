@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import "./Connections.css";
 
 function Connections() {
+  const navigate = useNavigate();
   const [search, handleSearch] = useState("");
   const [users, handleUsers] = useState([]);
   useEffect(()=>{
@@ -36,7 +38,12 @@ function Connections() {
         />
         <div className="Dropdown">
         {users.map((person, index) => (
-          <h3 key={index}>{person.name}</h3>
+          <div className="person" onClick={()=>{navigate(`/profile/${person.id}`)}}>
+            <img
+              src={person.profilePicUrl} alt={person.name}
+            />
+            <h3 key={index}>{person.name}</h3>
+          </div>
         ))}
         </div>
       </div>

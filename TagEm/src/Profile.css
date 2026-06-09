@@ -196,3 +196,13 @@
 .action-btn:hover {
   color: #1d9bf0;
 }
+
+.connect{
+  background-color: #1d9bf0;
+  border-color: #1d9bf0;
+  border: 2px solid #1d9bf0;
+  border-radius: 9999px;
+  cursor: pointer;
+  padding: 8px 20px;
+  color: white;
+}
