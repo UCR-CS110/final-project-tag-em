@@ -206,3 +206,7 @@
   padding: 8px 20px;
   color: white;
 }
+
+.connect:hover{
+  background-color: blue;
+}

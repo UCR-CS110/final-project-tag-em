@@ -15,6 +15,30 @@ const ProfilePage = () => {
         bio: "",
         resumeattached: null
     });
+    const [isEditingDetails, setIsEditingDetails] = useState(false);
+    const [isEditingBio, setIsEditingBio] = useState(false);
+    const [isEditingResume, setIsEditingResume] = useState(false);
+    const [error, setError] = useState("");
+    const [image, handleImage] = useState(null);
+    const [resume, setResume] = useState(null);
+    const [requestStatus, setRequestStatus] = useState("connect");
+    const [tagEms, setTagEms] = useState([
+        {
+            id: 1,
+            content: "Omg Scotty the Bear wowowo",
+            timestamp: "2h",
+            Tag: 14,
+            likes: 0,
+            replies: 3
+        },
+        {
+            id: 2,
+            content: "I think we should give Scotty the Bear the key to the Belltower!",
+            timestamp: "May 20",
+            likes: 32,
+            replies: 8
+        }
+    ]);
 
     useEffect(() => {
         async function fetchProfileData() {
@@ -40,29 +64,30 @@ const ProfilePage = () => {
         fetchProfileData();
     }, []);
 
-    const [isEditingDetails, setIsEditingDetails] = useState(false);
-    const [isEditingBio, setIsEditingBio] = useState(false);
-    const [isEditingResume, setIsEditingResume] = useState(false);
-    const [error, setError] = useState("");
-    const [image, handleImage] = useState(null);
-    const [resume, setResume] = useState(null);
-    const [tagEms, setTagEms] = useState([
-        {
-            id: 1,
-            content: "Omg Scotty the Bear wowowo",
-            timestamp: "2h",
-            Tag: 14,
-            likes: 0,
-            replies: 3
-        },
-        {
-            id: 2,
-            content: "I think we should give Scotty the Bear the key to the Belltower!",
-            timestamp: "May 20",
-            likes: 32,
-            replies: 8
+    useEffect(() => {
+        async function fetchConnectionStatus() {
+
+            try {
+                const response = await fetch(
+                    `http://localhost:5001/api/connections/status/${user.id}/${profileId}`
+                );
+
+                const data = await response.json();
+                console.log("STATUS DATA:", data);
+
+                if (response.ok) {
+                    setRequestStatus(data.status);
+                }
+            } catch (err) {
+                console.log(err);
+            }
         }
-    ]);
+
+        if (user.id !== Number(profileId)) {
+            fetchConnectionStatus();
+        }
+    }, [user.id, profileId]);
+
 
     const handleInputChange = (e) => {
         console.log("hi");
@@ -116,6 +141,33 @@ const ProfilePage = () => {
         console.log("FETCHED PROFILE:", data);
         console.log(profile);
     }
+
+    const handleConnectRequest = async () => {
+        try {
+            const API_URL = "http://localhost:5001/api/connections/request";
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    sender_id: user.id,
+                    receiver_id: profileId
+            })});
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.log(data.message);
+                return;
+            }
+
+            alert("Connection request sent!");
+            setRequestStatus("pending");
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     useEffect(() => {
         handleFetch()
@@ -196,7 +248,17 @@ const ProfilePage = () => {
                             Edit Details
                         </button>
                     )):(
-                        <button className='connect'>Connect</button>
+                        <button
+                            className="connect"
+                            onClick={handleConnectRequest}
+                            disabled={
+                                requestStatus === "pending" ||
+                                requestStatus === "connected" ||
+                                requestStatus === "accepted"
+                            }
+                        >
+                            {requestStatus === "connected" || requestStatus === "accepted"? "Connected": requestStatus === "pending"? "Pending": "Connect"}
+                        </button>
                     )}
                 </header>
 

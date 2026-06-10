@@ -156,3 +156,27 @@
   height: 30px;
   width: 30px;
 }
+
+.request-card {
+  width: 180px;
+  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  text-align: center;
+}
+
+.request-pic {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.accept-btn {
+  background-color: #1d9bf0;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+}

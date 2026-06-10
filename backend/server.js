@@ -20,6 +20,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/getUsers", connectionRouter);
 app.use("/api/Profile", profileRouter);
 app.use("/uploads", express.static("uploads"));
+app.use("/api/connections", connectionRouter);
 
 
 const PORT = process.env.PORT || 5001;

@@ -67,41 +67,6 @@ function Signup() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <label>Profile Picture URL</label>
-          <input
-            type="text"
-            placeholder="Enter a URL for your profile picture"
-            value={profilePicUrl}
-            onChange={(e) => setProfilePicUrl(e.target.value)}
-          />
-          <label>Pronouns</label>
-          <input
-            type="text"
-            placeholder="Enter your preferred pronouns"
-            value={genderIdentity}
-            onChange={(e) => setGenderIdentity(e.target.value)}
-          />
-          <label>Occupation</label>
-          <input
-            type="text"
-            placeholder="Enter your occupation"
-            value={occupation}
-            onChange={(e) => setOccupation(e.target.value)}
-          />
-          <label>Bio</label>
-          <textarea
-            placeholder="Tell us about yourself"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-          />
-           <label>
-            <input
-              type="checkbox"
-              checked={resumeAttached}
-              onChange={(e) => setResumeAttached(e.target.checked)}
-            />
-            Attach Resume
-          </label>
           <label>Email</label>
           <input
             type="email"
