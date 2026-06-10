@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useNavigate  } from "react-router-dom";
 import { useState } from "react";
 import "./Auth.css";
 
@@ -8,11 +9,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [profilePicUrl, setProfilePicUrl] = useState("");
-  const [genderIdentity, setGenderIdentity] = useState("");
-  const [occupation, setOccupation] = useState("");
-  const [bio, setBio] = useState("");
-  const [resumeAttached, setResumeAttached] = useState(false);
+  const navigate = useNavigate();
 
   async function handleSubmit(e){
     e.preventDefault();
@@ -25,11 +22,6 @@ function Signup() {
       name,
       email,
       password,
-      profilePicUrl,
-      genderIdentity,
-      occupation,
-      bio,
-      resumeAttached
     };
     const API_URL = "http://localhost:5001/api/auth/signup"
     try{
@@ -44,6 +36,7 @@ function Signup() {
       if (response.ok) {
         console.log("Success", data);
         setMessage("Account created successfully!");
+        navigate(`/login`)
       } else {
         throw new Error(data.message || "Failed to create account");
       }
@@ -56,7 +49,7 @@ function Signup() {
     <div className="auth-page">
       <div className="auth-card">
         <h1>Create account</h1>
-        <p> Account Creation Successful! Feel free to log in!</p>
+        <p> Enter your details!</p>
         {message && <p className="auth-message">{message}</p>}
 
         <form onSubmit={handleSubmit}>
