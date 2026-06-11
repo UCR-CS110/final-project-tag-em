@@ -1,52 +1,118 @@
-.events-page {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
+.meetups-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
   font-family: Arial, sans-serif;
 }
 
-.events-page h1 {
+.meetups-page h1 {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  color: #222;
 }
 
-.filter-box {
+.filters {
   display: flex;
-  gap: 10px;
-  margin-bottom: 25px;
+  gap: 15px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.filter-box input {
+.filters input {
   flex: 1;
-  padding: 10px;
-  border: 1px solid #cccccc;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
 }
 
-.events-list {
-  display: flex;
-  flex-direction: column;
+.filters input:focus {
+  outline: none;
+  border-color: #0077ff;
+}
+
+.meetup-list {
+  display: grid;
+  gap: 20px;
+}
+
+.meetup-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.meetup-card h2 {
+  margin-top: 0;
+  color: #0077ff;
+}
+
+.meetup-card p {
+  margin: 8px 0;
+  color: #333;
+}
+
+.no-meetups {
+  text-align: center;
+  color: gray;
+}
+
+.create-meetup-section {
+  margin-top: 40px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.create-meetup-section h2 {
+  margin-top: 0;
+  color: #222;
+}
+
+.create-meetup-form {
+  display: grid;
   gap: 15px;
 }
 
-.event-card {
-  padding: 15px;
-  border: 1px solid #dddddd;
+.create-meetup-form input,
+.create-meetup-form textarea {
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
 }
 
-.event-card h2 {
-  margin-top: 0;
-  margin-bottom: 10px;
+.create-meetup-form textarea {
+  min-height: 100px;
+  resize: vertical;
 }
 
-.event-card p {
-  margin: 5px 0;
+.create-meetup-form input:focus,
+.create-meetup-form textarea:focus {
+  outline: none;
+  border-color: #0077ff;
 }
 
-.no-events {
-  text-align: center;
-  color: gray;
+.create-meetup-form button {
+  padding: 12px;
+  font-size: 16px;
+  background-color: #0077ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.create-meetup-form button:hover {
+  background-color: #005fcc;
 }

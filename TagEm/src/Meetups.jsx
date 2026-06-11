@@ -1,61 +1,96 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Meetups.css";
 
-const events = [
-  {
-    id: 1,
-    name: "React Workshop",
-    location: "Riverside",
-    date: "June 10, 2026",
-  },
-  {
-    id: 2,
-    name: "AI Hackathon",
-    location: "Los Angeles",
-    date: "June 15, 2026",
-  },
-  {
-    id: 3,
-    name: "Web Dev Meetup",
-    location: "Riverside",
-    date: "June 20, 2026",
-  },
-  {
-    id: 4,
-    name: "Startup Networking Night",
-    location: "San Diego",
-    date: "June 25, 2026",
-  },
-];
+export default function Meetups() {
+  const [meetups, setMeetups] = useState([]);
 
-
-export default function Meetups () {
   const [nameFilter, setNameFilter] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
 
-  const filteredEvents = events.filter((event) => {
-    const matchesName = event.name
+  const [newMeetup, setNewMeetup] = useState({
+    event_name: "",
+    event_location: "",
+    event_date: "",
+    event_bio: "",
+    event_creator: "",
+  });
+
+  useEffect(() => {
+    fetchMeetups();
+  }, []);
+
+  async function fetchMeetups() {
+    try {
+      const response = await fetch("http://localhost:5001/api/meetups");
+      const data = await response.json();
+
+      setMeetups(data);
+    } catch (error) {
+      console.error("Failed to fetch meetups:", error);
+    }
+  }
+
+  const filteredMeetups = meetups.filter((meetup) => {
+    const matchesName = meetup.event_name
       .toLowerCase()
       .includes(nameFilter.toLowerCase());
 
-    const matchesLocation = event.location
+    const matchesLocation = meetup.event_location
       .toLowerCase()
       .includes(locationFilter.toLowerCase());
 
-    const matchesDate = dateFilter === "" || event.date === dateFilter;
+    const matchesDate =
+      dateFilter === "" || meetup.event_date.slice(0, 10) === dateFilter;
 
     return matchesName && matchesLocation && matchesDate;
   });
 
+  function handleInputChange(e) {
+    const { name, value } = e.target;
+
+    setNewMeetup({
+      ...newMeetup,
+      [name]: value,
+    });
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:5001/api/meetups", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newMeetup),
+      });
+
+      const createdMeetup = await response.json();
+
+      setMeetups([...meetups, createdMeetup]);
+
+      setNewMeetup({
+        event_name: "",
+        event_location: "",
+        event_date: "",
+        event_bio: "",
+        event_creator: "",
+      });
+    } catch (error) {
+      console.error("Failed to create meetup:", error);
+    }
+  }
+
   return (
-    <main className="events-page">
-      <h1>Events</h1>
+    <main className="meetups-page">
+      <h1>Meetups</h1>
 
       <div className="filters">
         <input
           type="text"
-          placeholder="Filter by event name"
+          placeholder="Filter by meetup name"
           value={nameFilter}
           onChange={(e) => setNameFilter(e.target.value)}
         />
@@ -74,22 +109,77 @@ export default function Meetups () {
         />
       </div>
 
-      <section className="event-list">
-        {filteredEvents.length > 0 ? (
-          filteredEvents.map((event) => (
-            <article className="event-card" key={event.id}>
-              <h2>{event.name}</h2>
+      <section className="meetup-list">
+        {filteredMeetups.length > 0 ? (
+          filteredMeetups.map((meetup) => (
+            <article className="meetup-card" key={meetup.id}>
+              <h2>{meetup.event_name}</h2>
               <p>
-                <strong>Location:</strong> {event.location}
+                <strong>Location:</strong> {meetup.event_location}
               </p>
               <p>
-                <strong>Date:</strong> {event.date}
+                <strong>Date:</strong> {meetup.event_date.slice(0, 10)}
+              </p>
+              <p>
+                <strong>Description:</strong> {meetup.event_bio}
+              </p>
+              <p>
+                <strong>Creator:</strong> {meetup.event_creator}
               </p>
             </article>
           ))
         ) : (
-          <p className="no-events">No events found.</p>
+          <p className="no-meetups">No meetups found.</p>
         )}
+      </section>
+
+      <section className="create-meetup-section">
+        <h2>Create a Meetup</h2>
+
+        <form className="create-meetup-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="event_name"
+            placeholder="Meetup name"
+            value={newMeetup.event_name}
+            onChange={handleInputChange}
+            required
+          />
+
+          <input
+            type="text"
+            name="event_location"
+            placeholder="Location"
+            value={newMeetup.event_location}
+            onChange={handleInputChange}
+            required
+          />
+
+          <input
+            type="date"
+            name="event_date"
+            value={newMeetup.event_date}
+            onChange={handleInputChange}
+            required
+          />
+
+          <textarea
+            name="event_bio"
+            placeholder="Description"
+            value={newMeetup.event_bio}
+            onChange={handleInputChange}
+          />
+
+          <input
+            type="text"
+            name="event_creator"
+            placeholder="Creator"
+            value={newMeetup.event_creator}
+            onChange={handleInputChange}
+          />
+
+          <button type="submit">Create Meetup</button>
+        </form>
       </section>
     </main>
   );

@@ -2,6 +2,10 @@ import { useState } from "react";
 import "./Jobs.css";
 
 const connections = [
+  "Backend",
+  "Frontend",
+  "UI/UX",
+  "-------------------",
   "Daniyal Bhat",
   "Gabriel Allaf",
   "Jayanth Samala",
@@ -15,8 +19,8 @@ const startingJobs = [
     company: "TechBridge",
     location: "Remote",
     description: "Build React components and help improve the company dashboard.",
-    sender: "Maya Chen",
-    taggedContacts: ["Alex Rivera"],
+    sender: "Gabriel Allaf",
+    taggedContacts: ["Jayanth Samala"],
   },
   {
     id: 2,
@@ -24,8 +28,8 @@ const startingJobs = [
     company: "CloudWorks",
     location: "Los Angeles",
     description: "Work with backend APIs and database systems.",
-    sender: "Jordan Lee",
-    taggedContacts: ["Sam Patel"],
+    sender: "Daniyal Bhat",
+    taggedContacts: ["Jayanth Samala"],
   },
 ];
 
