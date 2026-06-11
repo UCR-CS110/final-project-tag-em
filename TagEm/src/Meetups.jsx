@@ -3,6 +3,7 @@ import "./Meetups.css";
 
 export default function Meetups() {
   const [meetups, setMeetups] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const [nameFilter, setNameFilter] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
@@ -13,7 +14,7 @@ export default function Meetups() {
     event_location: "",
     event_date: "",
     event_bio: "",
-    event_creator: "",
+    //event_creator: "",
   });
 
   useEffect(() => {
@@ -64,12 +65,17 @@ export default function Meetups() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newMeetup),
+        body: JSON.stringify({
+           ...newMeetup,
+           event_creator_id: user.id 
+        }),
       });
 
-      const createdMeetup = await response.json();
+      //const createdMeetup =
+      await response.json();
 
-      setMeetups([...meetups, createdMeetup]);
+//      setMeetups([...meetups, createdMeetup]);
+      fetchMeetups();
 
       setNewMeetup({
         event_name: "",
@@ -124,7 +130,7 @@ export default function Meetups() {
                 <strong>Description:</strong> {meetup.event_bio}
               </p>
               <p>
-                <strong>Creator:</strong> {meetup.event_creator}
+                <strong>Creator:</strong> {meetup.event_creator_name}
               </p>
             </article>
           ))
@@ -170,13 +176,13 @@ export default function Meetups() {
             onChange={handleInputChange}
           />
 
-          <input
+         {/*} <input
             type="text"
             name="event_creator"
             placeholder="Creator"
             value={newMeetup.event_creator}
             onChange={handleInputChange}
-          />
+          />*/}
 
           <button type="submit">Create Meetup</button>
         </form>
