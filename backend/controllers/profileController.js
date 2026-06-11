@@ -14,7 +14,7 @@ export async function updateProfile(req, res){
         const user_genderIdentity = req.body.genderIdentity;
         const user_occupation = req.body.occupation;
         const user_bio = req.body.bio;
-
+        const updatedPicUrl = req.file ? req.file.path : req.body.profilePicUrl;
             const result = await pool.query(
             `UPDATE users
              SET name = $1,

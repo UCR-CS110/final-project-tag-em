@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import './Profile.css';
 
 const ProfilePage = () => {
-    const {id} = useParams();
+    const { id } = useParams();
     const user = JSON.parse(localStorage.getItem("user"));
     const profileId = id || user.id;
     console.log(user);
@@ -15,6 +15,8 @@ const ProfilePage = () => {
         bio: "",
         resumeattached: null
     });
+    const [postContent, setPostContent] = useState("");
+
     const [isEditingDetails, setIsEditingDetails] = useState(false);
     const [isEditingBio, setIsEditingBio] = useState(false);
     const [isEditingResume, setIsEditingResume] = useState(false);
@@ -23,8 +25,8 @@ const ProfilePage = () => {
     const [resume, setResume] = useState(null);
     const [requestStatus, setRequestStatus] = useState("connect");
     const [tagEms, setTagEms] = useState([
-        {
-            id: 1,
+        { //Dummy data
+            id: 10,
             content: "Omg Scotty the Bear wowowo",
             timestamp: "2h",
             Tag: 14,
@@ -32,25 +34,40 @@ const ProfilePage = () => {
             replies: 3
         },
         {
-            id: 2,
+            id: 11,
             content: "I think we should give Scotty the Bear the key to the Belltower!",
             timestamp: "May 20",
             likes: 32,
             replies: 8
         }
     ]);
-
+    useEffect(() => {
+        async function fetchPosts() {
+            try {
+                const response = await fetch(`http://localhost:5001/api/posts/user/${profileId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setTagEms(data);
+                } else {
+                    console.error("Failed to fetch posts");
+                }
+            } catch (err) {
+                console.error("Network error:", err);
+            }
+        }
+        fetchPosts();
+    }, [profileId]);
     useEffect(() => {
         async function fetchProfileData() {
             const storedUserString = localStorage.getItem("user");
             if (!storedUserString) {
                 console.log("No user is logged in");
-                return; 
+                return;
             }
             const storedUser = JSON.parse(storedUserString);
             try {
                 const response = await fetch(`http://localhost:5001/api/Profile/${profileId}`);
-                
+
                 if (response.ok) {
                     const data = await response.json();
                     setProfile(data);
@@ -105,26 +122,32 @@ const ProfilePage = () => {
         formData.append("occupation", profile.occupation);
         if (image) {
             formData.append("image", image);
+        } else if(profile.profilePicUrl){
+            formData.append("profilePicUrl",profile.profilePicUrl);
         }
         formData.append("bio", profile.bio);
         if (resume) {
             formData.append("resume", resume);
+        } else if (profile.resumeattached) {
+            formData.append("resumeattached", profile.resumeattached);
         }
 
         const API_URL = `http://localhost:5001/api/Profile/${profileId}`;
-        try{
+        try {
             const response = await fetch(API_URL, {
                 method: 'PUT',
                 body: formData
             });
 
             const data = await response.json();
-            if(!response.ok){
+            if (!response.ok) {
                 console.log("error");
                 return;
             }
             setProfile(data);
-        } catch(err){
+            handleImage(null);
+            setResume(null);
+        } catch (err) {
             console.log(err);
         }
 
@@ -153,7 +176,8 @@ const ProfilePage = () => {
                 body: JSON.stringify({
                     sender_id: user.id,
                     receiver_id: profileId
-            })});
+                })
+            });
 
             const data = await response.json();
 
@@ -172,7 +196,32 @@ const ProfilePage = () => {
     useEffect(() => {
         handleFetch()
     }, [])
-// Need to create a 'Create Tag-Site' (idk something that'll let people create 'tags' )
+    const handleCreatePost = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch("http://localhost:5001/api/posts", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    content: postContent,
+                    parent_post_id: null // Head post
+                })
+            });
+            if (!response.ok) {
+                console.log("Failed to create post");
+            }
+            const data = await response.json();
+            console.log("Created post:", data);
+            setTagEms([data, ...tagEms]);
+            setPostContent(""); 
+            handleFetch(); 
+        } catch (err) {
+            console.log("Error creating post:", err);
+        }
+    };
     return (
         <div className="profile-page">
             <div className="profile-container">
@@ -183,59 +232,60 @@ const ProfilePage = () => {
                         alt="Profile"
                         className="profile-pic"
                     />
-                    {user.id === Number(profileId)?(
-                    <div className="header-text">
-                        {isEditingDetails ? (
-                            <div className="edit-form">
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={profile.name || ""}
-                                    onChange={handleInputChange}
-                                    className="edit-input"
-                                    placeholder="Full Name"
-                                />
-                                <input
-                                    type="text"
-                                    name="genderIdentity"
-                                    value={profile.genderIdentity || ""}
-                                    onChange={handleInputChange}
-                                    className="edit-input"
-                                    placeholder="Gender Identity"
-                                />
-                                <input
-                                    type="text"
-                                    name="occupation"
-                                    value={profile.occupation || ""}
-                                    onChange={handleInputChange}
-                                    className="edit-input"
-                                    placeholder="Occupation"
-                                />
-                                <input
-                                    type="file"
-                                    name="Profile Picture"
-                                    accept="image/png, image/jpeg"
-                                    onChange={(e)=>{
-                                        console.log(e.target.files[0]);
-                                        handleImage(e.target.files[0]);}}
-                                    className="edit-input"
-                                />
-                            </div>
-                        ) : (
-                            <>
-                                <h1 className="profile-name">{profile.name}</h1>
-                                <p className="profile-subtext">{profile.genderIdentity}</p>
-                                <p className="profile-occupation">{profile.occupation}</p>
-                            </>
-                        )}
-                    </div>):(
-                        <div className="header-text"> 
+                    {user.id === Number(profileId) ? (
+                        <div className="header-text">
+                            {isEditingDetails ? (
+                                <div className="edit-form">
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={profile.name || ""}
+                                        onChange={handleInputChange}
+                                        className="edit-input"
+                                        placeholder="Full Name"
+                                    />
+                                    <input
+                                        type="text"
+                                        name="genderIdentity"
+                                        value={profile.genderIdentity || ""}
+                                        onChange={handleInputChange}
+                                        className="edit-input"
+                                        placeholder="Gender Identity"
+                                    />
+                                    <input
+                                        type="text"
+                                        name="occupation"
+                                        value={profile.occupation || ""}
+                                        onChange={handleInputChange}
+                                        className="edit-input"
+                                        placeholder="Occupation"
+                                    />
+                                    <input
+                                        type="file"
+                                        name="Profile Picture"
+                                        accept="image/png, image/jpeg"
+                                        onChange={(e) => {
+                                            console.log(e.target.files[0]);
+                                            handleImage(e.target.files[0]);
+                                        }}
+                                        className="edit-input"
+                                    />
+                                </div>
+                            ) : (
+                                <>
+                                    <h1 className="profile-name">{profile.name}</h1>
+                                    <p className="profile-subtext">{profile.genderIdentity}</p>
+                                    <p className="profile-occupation">{profile.occupation}</p>
+                                </>
+                            )}
+                        </div>) : (
+                        <div className="header-text">
                             <h1 className="profile-name">{profile.name}</h1>
                             <p className="profile-subtext">{profile.genderIdentity}</p>
                             <p className="profile-occupation">{profile.occupation}</p>
                         </div>
                     )}
-                    {user.id === Number(profileId)? (isEditingDetails ? (
+                    {user.id === Number(profileId) ? (isEditingDetails ? (
                         <button className="edit-button save-button" onClick={handleSaveDetails}>
                             Save Details
                         </button>
@@ -243,11 +293,11 @@ const ProfilePage = () => {
                         <button className="edit-button" onClick={() => {
                             console.log("edit clicked");
                             setIsEditingDetails(true);
-                            }}
+                        }}
                         >
                             Edit Details
                         </button>
-                    )):(
+                    )) : (
                         <button
                             className="connect"
                             onClick={handleConnectRequest}
@@ -257,52 +307,52 @@ const ProfilePage = () => {
                                 requestStatus === "accepted"
                             }
                         >
-                            {requestStatus === "connected" || requestStatus === "accepted"? "Connected": requestStatus === "pending"? "Pending": "Connect"}
+                            {requestStatus === "connected" || requestStatus === "accepted" ? "Connected" : requestStatus === "pending" ? "Pending" : "Connect"}
                         </button>
                     )}
                 </header>
 
                 <section className="profile-section">
                     <div className="section-header">
-                            <h2>Bio</h2>
-                            {user.id === Number(profileId)?(isEditingBio ? (
-                                <button className="edit-button save-button" onClick={handleSaveDetails}>
-                                    Save Bio
-                                </button>
-                            ) : (
-                                <button className="edit-button" onClick={() => setIsEditingBio(true)}>
-                                    Edit Bio
-                                </button>
-                            )):null}
-                        </div>
-                            {user.id === Number(profileId)?(isEditingBio ? (
-                                <input
-                                    type="text"
-                                    name="bio"
-                                    value={profile.bio || ""}
-                                    onChange={handleInputChange}
-                                    className="edit-input"
-                                    placeholder="Tell us about yourself..."
-                                />
-                            ) : (
-                                <p className="bio-text">{profile.bio}</p>
-                            )) : (<p className="bio-text">{profile.bio}</p>)}
+                        <h2>Bio</h2>
+                        {user.id === Number(profileId) ? (isEditingBio ? (
+                            <button className="edit-button save-button" onClick={handleSaveDetails}>
+                                Save Bio
+                            </button>
+                        ) : (
+                            <button className="edit-button" onClick={() => setIsEditingBio(true)}>
+                                Edit Bio
+                            </button>
+                        )) : null}
+                    </div>
+                    {user.id === Number(profileId) ? (isEditingBio ? (
+                        <input
+                            type="text"
+                            name="bio"
+                            value={profile.bio || ""}
+                            onChange={handleInputChange}
+                            className="edit-input"
+                            placeholder="Tell us about yourself..."
+                        />
+                    ) : (
+                        <p className="bio-text">{profile.bio}</p>
+                    )) : (<p className="bio-text">{profile.bio}</p>)}
                 </section>
 
                 <section className="profile-section">
                     <div className="section-header">
                         <h2>Resume</h2>
                     </div>
-                    {user.id === Number(profileId)?(isEditingResume ? (
-                                <button className="edit-button save-button" onClick={handleSaveDetails}>
-                                    Save Resume
-                                </button>
-                            ) : (
-                                <button className="edit-button" onClick={() => setIsEditingResume(true)}>
-                                    Change Resume
-                                </button>
-                            )):null}
-                    {user.id === Number(profileId)?(isEditingResume ? (
+                    {user.id === Number(profileId) ? (isEditingResume ? (
+                        <button className="edit-button save-button" onClick={handleSaveDetails}>
+                            Save Resume
+                        </button>
+                    ) : (
+                        <button className="edit-button" onClick={() => setIsEditingResume(true)}>
+                            Change Resume
+                        </button>
+                    )) : null}
+                    {user.id === Number(profileId) ? (isEditingResume ? (
                         <input
                             type="file"
                             name="resume"
@@ -312,61 +362,93 @@ const ProfilePage = () => {
                         />
                     ) : (
                         <p className="resume-text">
-                            <a 
-                                href={`http://localhost:5001${profile.resumeattached}`} 
+                            <a
+                                href={`http://localhost:5001${profile.resumeattached}`}
                                 target="_blank"
                             >
                                 Resume
                             </a>
                         </p>
-                    )):(<p className="resume-text">
-                            <a 
-                                href={`http://localhost:5001${profile.resumeattached}`} 
-                                target="_blank"
-                            >
-                                Resume
-                            </a>
-                        </p>)}
+                    )) : (<p className="resume-text">
+                        <a
+                            href={`http://localhost:5001${profile.resumeattached}`}
+                            target="_blank"
+                        >
+                            Resume
+                        </a>
+                    </p>)}
                 </section>
                 <section className="profile-section">
                     <div className="section-header">
                         <h2>Network</h2>
-                        {user.id === Number(profileId)? (
+                        {user.id === Number(profileId) ? (
                             <button className="edit-button">Manage Network</button>
-                        ): null}
+                        ) : null}
                     </div>
                     <p>You have {profile.networkConnections} people in your network available to tag.</p>
                 </section>
 
             </div>
-                            
+            {/*<div className="profile-container">
+               probably getting rid of
+
+            </div>*/}
             <div className="My-TagEms">
-                
-                <div className="tag-ems-list">
-                    {tagEms.map((tagEm) => (
-                        <article key={tagEm.id} className="tag-em-post">
+                <div className="create-post-section">
+                    <h3>Create a Post</h3>
+                    <form onSubmit={handleCreatePost}>
+                        <textarea
+                            value={postContent}
+                            onChange={(e) => setPostContent(e.target.value)}
+                            placeholder="What's on your mind?"
+                            rows="4"
+                            style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+                        />
+                        {error && <p style={{ color: "red" }}>{error}</p>}
+
+                        <button
+                            type="submit"
+                            disabled={!postContent.trim()}
+                        >
+                            Post
+                        </button>
+                    </form>
+                </div>
+                <div className="tag-ems-list"> 
+                    {tagEms.map((post,index) => (
+                        <article key={`post-${post.id}-${index}`} className="tag-em-post">
                             <div className="tag-em-avatar">
-                                <img src={image ? URL.createObjectURL(image) : profile.profilePicUrl || undefined} alt={profile.name} />
+                                <img
+                                    src={image ? URL.createObjectURL(image) : profile.profilePicUrl || undefined}
+                                    alt={profile.name}
+                                />
                             </div>
+
                             <div className="tag-em-content">
                                 <div className="tag-em-meta">
                                     <strong>{profile.name}</strong>
-                                    <span className="tag-em-handle">@alex_designs</span>
+                                    {/*<span className="tag-em-handle">@alex_designs</span>, probably getting rid of, maybe replace with userId?*/}
                                     <span className="tag-em-dot">·</span>
-                                    <span className="tag-em-time">{tagEm.timestamp}</span>
+                                    <span className="tag-em-time">
+                                        {post.created_at ? new Date(post.created_at).toLocaleDateString() : post.timestamp}
+                                    </span>
                                 </div>
-                                <p className="tag-em-text">{tagEm.content}</p>
+
+                                <p className="tag-em-text">{post.content}</p> {/*tbd in the morning... */}
+
                                 <div className="tag-em-actions">
                                     <button className="action-btn reply-btn">
-                                        Tag Em!    -- {tagEm.replies}
+                                        Tag Em!    -- {post.replies?.length || post.replies || 0}
                                     </button>
                                     <button className="action-btn like-btn">
-                                        ❤️  -- {tagEm.likes}
+                                        ❤️  -- {post.likes_count || post.likes || 0}
                                     </button>
                                 </div>
                             </div>
+
                         </article>
                     ))}
+
                 </div>
             </div>
         </div>

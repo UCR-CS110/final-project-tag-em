@@ -6,6 +6,7 @@ import Router from "./routes/userRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import connectionRouter from "./routes/connectionRoutes.js";
 import profileRouter from "./routes/profileRouter.js";
+import postsRouter from "./routes/postsRouter.js";
 import passport from "passport";
 
 dotenv.config();
@@ -21,6 +22,7 @@ app.use("/api/getUsers", connectionRouter);
 app.use("/api/Profile", profileRouter);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/connections", connectionRouter);
+app.use("/api/posts", postsRouter);
 
 
 const PORT = process.env.PORT || 5001;
