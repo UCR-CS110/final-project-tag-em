@@ -35,9 +35,10 @@ export const up = (pgm) => {
       type: "text",
     },
 
-    event_creator: {
-      type: "varchar(100)",
-      references: "users(name)",
+    event_creator_id: {
+      type: "integer",
+      references: "users(id)",
+      onDelete: "CASCADE",
     },
   });
 };

@@ -27,7 +27,7 @@ export const up = (pgm) => {
       type: "varchar(255)",
     },
 
-    '"genderIdentity"': {
+    genderIdentity: {
       type: "varchar(255)",
     },
     occupation: {
@@ -40,7 +40,7 @@ export const up = (pgm) => {
       type: "text",
       default: "false",
     },
-    '"profilePicUrl"': {
+    profilePicUrl: {
       type: "text",
     },
     networkconnections: {
