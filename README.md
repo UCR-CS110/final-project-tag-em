@@ -12,7 +12,13 @@ The Profile page has 5 sections: Name, Pronouns, and Occupation; Bio; Resume; Ne
 
 
 <h1> Deployment Instructions </h1>
-In order to deploy our code, simply clone the repo, then change directories to the "TagEm" folder and run the commands "npm install" followed by "npm run dev". This will provide a locally hosted link to view our website.
+In order to deploy our code, first you must have PostgreSQL installed on your machine. For MacOS users, I recommend simply installing it via Homebrew. Then, start up a database on your local machine using the command
+"brew services start postgresql@18" *to stop, same command but replace start with stop. 
+From here, simply clone the repo and set up your .ENV file as a loose file in the backend folder. Important to note, in your .ENV file you will want to have 
+"DATABASE_URL=postgresql://DB_USER:DB_PASSWORD@DB_HOST:DB_PORT/DB_NAME". 
+Next, open a terminal for both the backend (Directory labeled "backend") and frontend (Directory labelled "TagEm" then change directories to the "TagEm" folder and run the commands "npm install" in each terminal. In your backend terminal, you will additionally want to run 
+"npm run migrate:up" as this will set up your local DB to work properly with our code. 
+From, there followed by "npm run dev" on each terminal, and this will provide a locally hosted link to view our website.
 
 <h1> Tools Used </h1>
-So far we have only used React for our frontend development.
+So far we have used React for our frontend development, PostgreSQL for our database, express for our backend, ....
