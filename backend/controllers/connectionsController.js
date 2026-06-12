@@ -185,14 +185,18 @@ export async function getConnections(req, res) {
         u.id,
         u.name,
         u.email,
-        u."profilePicUrl"
-       FROM connections c
-       JOIN users u
-       ON u.id = CASE
-         WHEN c.user1_id = $1 THEN c.user2_id
-         ELSE c.user1_id
-       END
-       WHERE c.user1_id = $1 OR c.user2_id = $1`,
+        u."profilePicUrl",
+        ct.tag_type
+      FROM connections c
+      JOIN users u
+      ON u.id = CASE
+        WHEN c.user1_id = $1 THEN c.user2_id
+        ELSE c.user1_id
+      END
+      LEFT JOIN connection_tags ct
+      ON ct.owner_id = $1
+      AND ct.connection_user_id = u.id
+      WHERE c.user1_id = $1 OR c.user2_id = $1`,
       [id]
     );
 

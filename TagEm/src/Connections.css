@@ -180,3 +180,25 @@
   border-radius: 20px;
   padding: 8px 14px;
 }
+
+.tag-box {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tag-box input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+}
+
+.tag-box button {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: #0077ff;
+  color: white;
+  cursor: pointer;
+}
