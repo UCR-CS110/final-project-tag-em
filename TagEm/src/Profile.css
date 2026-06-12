@@ -89,6 +89,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .edit-button:hover {
@@ -129,14 +130,20 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   min-width: 650px;
 }
-
+.post-comments-section{
+  margin-top: 18px;
+  border-Top: 1px solid #eee;
+  padding-top: 15px;
+}
 .tag-ems-section {
   margin-top: 40px;
   border: 1px solid #eaeaea;
   border-radius: 8px;
   background-color: #fff;
 }
-
+h4{
+margin-bottom: 9px;
+}
 .feed-header {
   padding: 16px 20px;
   margin: 0;
@@ -162,7 +169,15 @@
 .tag-em-content {
   flex-grow: 1;
 }
-
+.commentBox{
+  margin-top: 15px;
+}
+.comment-item{
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
 .tag-em-meta {
   display: flex;
   align-items: center;
@@ -178,7 +193,15 @@
   line-height: 1.5;
   color: #0f1419;
 }
-
+.With-Replies-Text{
+font-size: 1.3em;
+}
+.Reply-Box{
+  width:90%;
+  font-size: 12pt;
+  padding: 10px;
+  border-radius: 5px;
+}
 .tag-em-actions {
   display: flex;
   justify-content: space-between;
@@ -189,7 +212,7 @@
   background: none;
   border: none;
   color: #536471;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;

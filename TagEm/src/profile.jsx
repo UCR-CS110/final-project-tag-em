@@ -15,8 +15,8 @@ const ProfilePage = () => {
         bio: "",
         resumeattached: null
     });
-    const [postContent, setPostContent] = useState("");
-
+    
+    
     const [isEditingDetails, setIsEditingDetails] = useState(false);
     const [isEditingBio, setIsEditingBio] = useState(false);
     const [isEditingResume, setIsEditingResume] = useState(false);
@@ -24,6 +24,10 @@ const ProfilePage = () => {
     const [image, handleImage] = useState(null);
     const [resume, setResume] = useState(null);
     const [requestStatus, setRequestStatus] = useState("connect");
+    const [postContent, setPostContent] = useState("");
+    const [activeCommentPostId, setActiveCommentPostId] = useState(null);
+    const [commentText, setCommentText] = useState("");
+    const [viewingPost, setViewingPost] = useState(null);
     const [tagEms, setTagEms] = useState([
         { //Dummy data
             id: 10,
@@ -41,8 +45,7 @@ const ProfilePage = () => {
             replies: 8
         }
     ]);
-    useEffect(() => {
-        async function fetchPosts() {
+    async function fetchPosts() {
             try {
                 const response = await fetch(`http://localhost:5001/api/posts/user/${profileId}`);
                 if (response.ok) {
@@ -55,6 +58,7 @@ const ProfilePage = () => {
                 console.error("Network error:", err);
             }
         }
+    useEffect(() => {
         fetchPosts();
     }, [profileId]);
     useEffect(() => {
@@ -113,7 +117,37 @@ const ProfilePage = () => {
             [e.target.name]: e.target.value
         });
     };
+    const handleViewPost = async (postId) => {
+        try {
 
+            const response = await fetch(`http://localhost:5001/api/posts/${postId}`);
+            if (response.ok) {
+                const data = await response.json();
+                setViewingPost(data);
+            } else {
+                console.error("Failed to fetch single post");
+            }
+        } catch (err) {
+            console.error("Network error:", err);
+        }
+    };
+    const handleLike = async (postId) => {
+        try {
+            const response = await fetch(`http://localhost:5001/api/posts/${postId}/like`, {method: 'PUT'});
+        if (response.ok){
+            if (viewingPost && viewingPost.id === postId){
+setViewingPost(prev => ({...prev, likes_count: (prev.likes_count || prev.likes || 0) + 1}))
+            } else {
+                setTagEms(prevPosts => prevPosts.map(post => 
+                        post.id === postId ? {...post, likes_count: (post.likes_count || post.likes || 0) + 1} : post
+                    ));
+            }
+        }
+        }   
+     catch(err) {
+console.error("Error liking post:", err);
+
+        }    }
     const handleSaveDetails = async () => {
         console.log("BUTTON CLICKED");
         const formData = new FormData();
@@ -164,7 +198,38 @@ const ProfilePage = () => {
         console.log("FETCHED PROFILE:", data);
         console.log(profile);
     }
+    const handleCommentSubmit = async (postId) => {
+        if (!commentText.trim()) return;
 
+        try {
+            const response = await fetch ("http://localhost:5001/api/posts", {
+                method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        body: JSON.stringify({
+            user_id: user.id,
+            content: commentText,
+            parent_post_id: postId
+        })
+    });
+    if (response.ok){
+        setCommentText("");
+        setActiveCommentPostId(null);
+            if (viewingPost) {
+                handleViewPost(viewingPost.id); 
+            } else {
+                    // You might need to change handleFetch() back to fetchPosts() here 
+                    // depending on how your feed updates!
+                fetchPosts(); 
+                }
+                } else{
+        console.log("Failed to create comment");
+    }
+        } catch(err){
+            console.log("Error creating comment:", err);
+        }
+    };
     const handleConnectRequest = async () => {
         try {
             const API_URL = "http://localhost:5001/api/connections/request";
@@ -362,7 +427,7 @@ const ProfilePage = () => {
                         />
                     ) : (
                         <p className="resume-text">
-                            <a
+                            <a 
                                 href={`http://localhost:5001${profile.resumeattached}`}
                                 target="_blank"
                             >
@@ -389,67 +454,115 @@ const ProfilePage = () => {
                 </section>
 
             </div>
-            {/*<div className="profile-container">
-               probably getting rid of
-
-            </div>*/}
             <div className="My-TagEms">
-                <div className="create-post-section">
-                    <h3>Create a Post</h3>
-                    <form onSubmit={handleCreatePost}>
-                        <textarea
-                            value={postContent}
-                            onChange={(e) => setPostContent(e.target.value)}
-                            placeholder="What's on your mind?"
-                            rows="4"
-                            style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-                        />
-                        {error && <p style={{ color: "red" }}>{error}</p>}
-
-                        <button
-                            type="submit"
-                            disabled={!postContent.trim()}
-                        >
-                            Post
+                {viewingPost ? (
+                    <div className="focused-post-view">
+                        <button className="edit-button"  onClick={() => setViewingPost(null)}>
+                            Head Back
                         </button>
-                    </form>
-                </div>
-                <div className="tag-ems-list"> 
-                    {tagEms.map((post,index) => (
-                        <article key={`post-${post.id}-${index}`} className="tag-em-post">
-                            <div className="tag-em-avatar">
-                                <img
-                                    src={image ? URL.createObjectURL(image) : profile.profilePicUrl || undefined}
-                                    alt={profile.name}
-                                />
-                            </div>
 
+                        <article className="tag-em-post" style={{ border: "2px solid #ccc" }}>
                             <div className="tag-em-content">
                                 <div className="tag-em-meta">
+                                <div className="tag-em-avatar">
+                                        <img
+                                            src={image ? URL.createObjectURL(image) : profile.profilePicUrl || undefined}
+                                            alt={profile.name}
+                                        />
+                                    </div>
                                     <strong>{profile.name}</strong>
-                                    {/*<span className="tag-em-handle">@alex_designs</span>, probably getting rid of, maybe replace with userId?*/}
-                                    <span className="tag-em-dot">·</span>
                                     <span className="tag-em-time">
-                                        {post.created_at ? new Date(post.created_at).toLocaleDateString() : post.timestamp}
+                                        {viewingPost.created_at ? new Date(viewingPost.created_at).toLocaleDateString() : viewingPost.timestamp}
                                     </span>
                                 </div>
+                                <p className="With-Replies-Text">{viewingPost.content}</p>
 
-                                <p className="tag-em-text">{post.content}</p> {/*tbd in the morning... */}
-
-                                <div className="tag-em-actions">
-                                    <button className="action-btn reply-btn">
-                                        Tag Em!    -- {post.replies?.length || post.replies || 0}
-                                    </button>
-                                    <button className="action-btn like-btn">
-                                        ❤️  -- {post.likes_count || post.likes || 0}
+                                <div className="commentBox">
+                                    <textarea className="Reply-Box"
+                                        value={commentText}
+                                        onChange={(e) => setCommentText(e.target.value)}
+                                        placeholder='Type your reply...'
+                                    /> 
+                                    <button onClick={() => handleCommentSubmit(viewingPost.id)} disabled={!commentText.trim()} className='edit-button'
+                                    >
+                                        Submit Reply
                                     </button>
                                 </div>
+                                {viewingPost.comments && viewingPost.comments.length > 0 && (
+                                    <div className="post-comments-section">
+                                        <h4>Replies</h4>
+                                        {viewingPost.comments.map((comment) => (
+                                            <div key={`comment-${comment.id}`} className="comment-item">
+                                                <div className="tag-em-meta">
+                                                    <span className="tag-em-time">
+                                                        {comment.created_at ? new Date(comment.created_at).toLocaleDateString() : "Just now"}
+                                                    </span>
+                                                </div>
+                                                <p className="tag-em-text">
+                                                    {comment.content}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
-
                         </article>
-                    ))}
+                    </div>
 
-                </div>
+                ) : (
+                    <> {/*not in a reply section*/}
+                        <div className="create-post-section">
+                            <h3>Create a Blog Post</h3>
+                            <form onSubmit={handleCreatePost}>
+                                <textarea className="Reply-Box"
+                                    value={postContent}
+                                    onChange={(e) => setPostContent(e.target.value)}
+                                    placeholder="What's on your mind?"
+                                    rows="5"
+                                />
+                                {error && <p style={{ color: "orange" }}>{error}</p>}
+                                <button className="edit-button" type="submit" disabled={!postContent.trim()}>Post</button>
+                            </form>
+                        </div>
+
+                        <div className="tag-ems-list"> 
+                            {tagEms.map((post, index) => (
+                                <article key={`post-${post.id}-${index}`} className="tag-em-post">
+                                    <div className="tag-em-avatar">
+                                        <img
+                                            src={image ? URL.createObjectURL(image) : profile.profilePicUrl || undefined}
+                                            alt={profile.name}
+                                        />
+                                    </div>
+                                    <div className="tag-em-content">
+                                        <div className="tag-em-meta">
+                                            <strong>{profile.name}</strong>
+                                            <span className="tag-em-dot">·</span>
+                                            <span className="tag-em-time">
+                                                {post.created_at ? new Date(post.created_at).toLocaleDateString() : post.timestamp}
+                                            </span>
+                                        </div>
+                                        <p className="tag-em-text">{post.content}</p> 
+                                        
+                                        <div className="tag-em-actions">
+                                            <button 
+                                                className="action-btn reply-btn"
+                                                onClick={() => handleViewPost(post.id)}
+                                            >
+                                                See People's Thoughts
+                                            </button>
+                                            <button className="action-btn like-btn"
+                                            onClick={() => handleLike(post.id)}
+                                            >
+                                                ❤️  -- {post.likes_count || post.likes || 0}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
