@@ -12,13 +12,30 @@ The Profile page has 5 sections: Name, Pronouns, and Occupation; Bio; Resume; Ne
 
 
 <h1> Deployment Instructions </h1>
-In order to deploy our code, first you must have PostgreSQL installed on your machine. For MacOS users, I recommend simply installing it via Homebrew. Then, start up a database on your local machine using the command
-"brew services start postgresql@18" *to stop, same command but replace start with stop. 
-From here, simply clone the repo and set up your .ENV file as a loose file in the backend folder. Important to note, in your .ENV file you will want to have 
-"DATABASE_URL=postgresql://DB_USER:DB_PASSWORD@DB_HOST:DB_PORT/DB_NAME". 
-Next, open a terminal for both the backend (Directory labeled "backend") and frontend (Directory labelled "TagEm" then change directories to the "TagEm" folder and run the commands "npm install" in each terminal. In your backend terminal, you will additionally want to run 
-"npm run migrate:up" as this will set up your local DB to work properly with our code. 
-From, there followed by "npm run dev" on each terminal, and this will provide a locally hosted link to view our website.
+In order to deploy our code, first you must have PostgreSQL installed on your machine.
+<h3>For MacOS users </h3> We recommend simply installing it via Homebrew. A similar installer to the Windows installer is available if that's preferred.  Then, start up a database on your local machine using the command. To stop, same command but replace start with stop.
+<ul> - "brew services start postgresql@18" </ul>
+<ul> - "brew services stop postgresql@18"</ul>
+<h3>For Windows users</h3>
+We recommend installing from the interactive installer on the PostgreSQL website. You could use either the GUI app "pgAdmin 4" or terminal app "SQL Shell (psql)" that the recommended installer provides to set up your local database
+
+<h3> Cloning the Repo and Setup
+</h3>
+From here, simply clone the repo and set up your .ENV file as a loose file in the backend folder. <b>Important to note, in your .ENV file you will want to have </b>
+<ul> "DATABASE_URL=postgresql://DB_USER:DB_PASSWORD@DB_HOST:DB_PORT/DB_NAME". </ul> 
+Next, open two terminals for both the backend (Directory labeled "backend") and frontend (Directory labelled "TagEm"), then change to the proper directories to the "TagEm" folder and run the following commands in each terminal
+<ul> - "npm install" 
+<ul>- For backend-terminal, also run
+<ul> - "npm run migrate:up" </ul>
+</ul> </ul> </ul>
+ 
+- "npm run dev" </ul>
+This will provide a locally hosted link to view your local deployment of our website.
 
 <h1> Tools Used </h1>
-So far we have used React for our frontend development, PostgreSQL for our database, express for our backend, ....
+For our frontend development:
+<ul> - React, React-Router. </ul>
+For our backend development:
+<ul>- Node.js, Express, Multer, Bcrypt, and Passport.</ul>
+For our database:
+<ul>PostgreSQLFor and node-pg-migrate.</ul> 
