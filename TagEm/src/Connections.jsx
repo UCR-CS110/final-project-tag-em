@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import "./Connections.css";
 
 function Connections() {
@@ -134,7 +134,7 @@ async function rejectRequest(requestId) {
         {users.map((person, index) => (
           <div className="person" onClick={()=>{navigate(`/profile/${person.id}`)}}>
             <img
-              src={person.profilePicUrl} alt={person.name}
+              src={person.profilePicUrl || "https://anitawatkins.com/wp-content/uploads/2016/02/Generic-Profile-1600x1600.png"} alt={person.name}
             />
             <h3 key={index}>{person.name}</h3>
           </div>
@@ -155,8 +155,9 @@ async function rejectRequest(requestId) {
         {showRequests
           ? requests.map((request) => (
               <div className="request-card" key={request.id}>
+            <Link key={request} to={`/profile/${request.id}`}>
                 <img
-                  src={request.profilePicUrl}
+                  src={request.profilePicUrl || "https://anitawatkins.com/wp-content/uploads/2016/02/Generic-Profile-1600x1600.png"}
                   alt={request.name}
                   className="request-pic"
                 />
@@ -178,18 +179,21 @@ async function rejectRequest(requestId) {
                     Reject
                   </button>
                 </div>
+              </Link>
               </div>
             ))
           : connections.map((connection) => (
+            <Link key={connection} to={`/profile/${connection.id}`}>
               <div className="request-card" key={connection.id}>
                 <img
-                  src={connection.profilePicUrl}
+                  src={connection.profilePicUrl || "https://anitawatkins.com/wp-content/uploads/2016/02/Generic-Profile-1600x1600.png"}
                   alt={connection.name}
                   className="request-pic"
                 />
 
                 <h3>{connection.name}</h3>
               </div>
+              </Link>
             ))}
       </div>
     </div>

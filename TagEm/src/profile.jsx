@@ -13,7 +13,7 @@ const ProfilePage = () => {
         name: "",
         genderIdentity: "",
         occupation: "",
-        profilePicUrl: null,
+        profilePicUrl: "https://anitawatkins.com/wp-content/uploads/2016/02/Generic-Profile-1600x1600.png",
         bio: "",
         resumeattached: null
     });
@@ -311,7 +311,7 @@ console.error("Error liking post:", err);
 
                 <header className="profile-header">
                     <img
-                        src={image ? URL.createObjectURL(image) : profile.profilePicUrl || undefined}
+                        src={image ? URL.createObjectURL(image) : profile.profilePicUrl || "https://anitawatkins.com/wp-content/uploads/2016/02/Generic-Profile-1600x1600.png"}
                         alt="Profile"
                         className="profile-pic"
                     />
@@ -470,7 +470,7 @@ console.error("Error liking post:", err);
                             </button>
                         </Link>
                     </div>
-                    <p>You have {connections.length} people in your network!</p>
+                    <p>{profile.name} has {connections.length} people in their network!</p>
                     
                     <div className="profile-connections-grid">
                         {connections.length > 0 ? (
@@ -478,7 +478,7 @@ console.error("Error liking post:", err);
                                 <Link key={conn.id} to={`/profile/${conn.id}`}>
                                     <div className="mini-connection-card">
                                         <img 
-                                            src={conn.profilePicUrl || "https://via.placeholder.com/60"} 
+                                            src={conn.profilePicUrl || "https://anitawatkins.com/wp-content/uploads/2016/02/Generic-Profile-1600x1600.png"} 
                                             alt={conn.name} 
                                             className="connection-img"
                                             style={{ cursor: "pointer" }}
@@ -508,7 +508,7 @@ console.error("Error liking post:", err);
                                 <div className="tag-em-meta">
                                 <div className="tag-em-avatar">
                                         <img
-                                            src={image ? URL.createObjectURL(image) : profile.profilePicUrl || undefined}
+                                            src={image ? URL.createObjectURL(image) : profile.profilePicUrl || "https://anitawatkins.com/wp-content/uploads/2016/02/Generic-Profile-1600x1600.png"}
                                             alt={profile.name}
                                         />
                                     </div>
@@ -574,7 +574,7 @@ console.error("Error liking post:", err);
                                 <article key={`post-${post.id}-${index}`} className="tag-em-post">
                                     <div className="tag-em-avatar">
                                         <img
-                                            src={image ? URL.createObjectURL(image) : profile.profilePicUrl || undefined}
+                                            src={image ? URL.createObjectURL(image) : profile.profilePicUrl || "https://anitawatkins.com/wp-content/uploads/2016/02/Generic-Profile-1600x1600.png"}
                                             alt={profile.name}
                                         />
                                     </div>
