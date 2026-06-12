@@ -237,3 +237,36 @@ font-size: 1.3em;
 .connect:hover{
   background-color: blue;
 }
+.profile-connections-grid {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.mini-connection-card {
+    text-align: center;
+    width: 80px;
+}
+
+.connection-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    cursor: pointer;
+}
+
+.connection-name {
+    font-size: 0.85em;
+    margin: 5px 0 0 0;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.connections-missing{
+  color:#536471;
+  font-style: italic;
+}

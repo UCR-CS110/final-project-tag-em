@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link} from 'react-router-dom';
+import Connections from './Connections';
 import './Profile.css';
+
 
 const ProfilePage = () => {
     const { id } = useParams();
@@ -16,7 +18,7 @@ const ProfilePage = () => {
         resumeattached: null
     });
     
-    
+    const [connections, setConnections] = useState([]);
     const [isEditingDetails, setIsEditingDetails] = useState(false);
     const [isEditingBio, setIsEditingBio] = useState(false);
     const [isEditingResume, setIsEditingResume] = useState(false);
@@ -83,7 +85,24 @@ const ProfilePage = () => {
             }
         }
         fetchProfileData();
-    }, []);
+    }, [profileId]);
+        useEffect(() => {
+        async function fetchConnectionsList() {
+            try {
+                const response = await fetch(`http://localhost:5001/api/connections/${profileId}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    setConnections(data);
+                } else {
+                    console.error("Failed to fetch connections");
+                }
+            } catch (err) {
+                console.error("Network error:", err);
+            }
+        }
+        fetchConnectionsList();
+    }, [profileId]);
 
     useEffect(() => {
         async function fetchConnectionStatus() {
@@ -219,8 +238,6 @@ console.error("Error liking post:", err);
             if (viewingPost) {
                 handleViewPost(viewingPost.id); 
             } else {
-                    // You might need to change handleFetch() back to fetchPosts() here 
-                    // depending on how your feed updates!
                 fetchPosts(); 
                 }
                 } else{
@@ -259,8 +276,9 @@ console.error("Error liking post:", err);
     };
 
     useEffect(() => {
-        handleFetch()
-    }, [])
+        handleFetch();
+        window.scrollTo(0,0);
+    }, [profileId])
     const handleCreatePost = async (e) => {
         e.preventDefault();
         try {
@@ -446,11 +464,35 @@ console.error("Error liking post:", err);
                 <section className="profile-section">
                     <div className="section-header">
                         <h2>Network</h2>
-                        {user.id === Number(profileId) ? (
-                            <button className="edit-button">Manage Network</button>
-                        ) : null}
+                        <Link to="/Connections">
+                            <button className="edit-button">
+                            Manage Network
+                            </button>
+                        </Link>
                     </div>
-                    <p>You have {profile.networkConnections} people in your network available to tag.</p>
+                    <p>You have {connections.length} people in your network!</p>
+                    
+                    <div className="profile-connections-grid">
+                        {connections.length > 0 ? (
+                            connections.map((conn) => (
+                                <Link key={conn.id} to={`/profile/${conn.id}`}>
+                                    <div className="mini-connection-card">
+                                        <img 
+                                            src={conn.profilePicUrl || "https://via.placeholder.com/60"} 
+                                            alt={conn.name} 
+                                            className="connection-img"
+                                            style={{ cursor: "pointer" }}
+                                        />
+                                        <p className="connection-name">
+                                            {conn.name}
+                                        </p>
+                                    </div>
+                                </Link>
+                            ))
+                        ) : (
+                            <p className='connections-missing'>No connections to display yet.</p>
+                        )}
+                    </div>
                 </section>
 
             </div>
@@ -511,6 +553,7 @@ console.error("Error liking post:", err);
 
                 ) : (
                     <> {/*not in a reply section*/}
+                    {user.id === Number(profileId) && (
                         <div className="create-post-section">
                             <h3>Create a Blog Post</h3>
                             <form onSubmit={handleCreatePost}>
@@ -524,7 +567,8 @@ console.error("Error liking post:", err);
                                 <button className="edit-button" type="submit" disabled={!postContent.trim()}>Post</button>
                             </form>
                         </div>
-
+                    )}
+                        <h3>Comment on {profile.name}'s Page!</h3>
                         <div className="tag-ems-list"> 
                             {tagEms.map((post, index) => (
                                 <article key={`post-${post.id}-${index}`} className="tag-em-post">
