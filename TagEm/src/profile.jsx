@@ -154,15 +154,12 @@ const ProfilePage = () => {
         try {
             const response = await fetch(`http://localhost:5001/api/posts/${postId}/like`, {method: 'PUT'});
         if (response.ok){
-            if (viewingPost && viewingPost.id === postId){
-setViewingPost(prev => ({...prev, likes_count: (prev.likes_count || prev.likes || 0) + 1}))
-            } else {
                 setTagEms(prevPosts => prevPosts.map(post => 
                         post.id === postId ? {...post, likes_count: (post.likes_count || post.likes || 0) + 1} : post
                     ));
             }
         }
-        }   
+
      catch(err) {
 console.error("Error liking post:", err);
 
