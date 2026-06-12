@@ -24,7 +24,7 @@ export async function sendRequest(req, res) {
       return res.status(400).json({ message: "You cannot connect with yourself" });
     }
     await pool.query(
-      `INSERT INTO connectionRequests
+      `INSERT INTO "connectionRequests"
        (sender_id, receiver_id, status)
        VALUES ($1, $2, $3)`,
       [sender_id, receiver_id, "pending"]
@@ -49,7 +49,7 @@ export async function getRequests(req, res) {
         u.name,
         u.email,
         u."profilePicUrl"
-      FROM connectionRequests cr
+      FROM "connectionRequests" cr
       JOIN users u
       ON cr.sender_id = u.id
       WHERE cr.receiver_id = $1
@@ -68,7 +68,7 @@ export async function acceptRequest(req, res) {
 
         const request = await pool.query(
             `SELECT sender_id, receiver_id
-             FROM connectionRequests
+             FROM "connectionRequests"
              WHERE id = $1`,
             [requestId]
         );
@@ -82,7 +82,7 @@ export async function acceptRequest(req, res) {
         const { sender_id, receiver_id } = request.rows[0];
 
         await pool.query(
-            `UPDATE connectionRequests
+            `UPDATE "connectionRequests"
              SET status = 'accepted'
              WHERE id = $1`,
             [requestId]
@@ -115,7 +115,7 @@ export async function rejectRequest(req, res) {
         const requestId = req.params.id;
 
         await pool.query(
-            `DELETE FROM connectionRequests
+            `DELETE FROM "connectionRequests"
              WHERE id = $1`,
             [requestId]
         );
@@ -138,7 +138,7 @@ export async function getConnectionStatus(req, res) {
 
     const request = await pool.query(
       `SELECT status
-       FROM connectionRequests
+       FROM "connectionRequests"
        WHERE 
        (sender_id = $1 AND receiver_id = $2)
        OR

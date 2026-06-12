@@ -9,6 +9,8 @@ import profileRouter from "./routes/profileRouter.js";
 import postsRouter from "./routes/postsRouter.js";
 import meetupsRouter from "./routes/meetupsRoutes.js";
 import passport from "passport";
+import adminRoutes from "./routes/adminRoutes.js";
+import jobsRouter from "./routes/jobsRoutes.js";
 
 dotenv.config();
 
@@ -26,6 +28,8 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/connections", connectionRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/meetups", meetupsRouter);
+app.use("/api/admin", adminRoutes);
+app.use("/api/jobs", jobsRouter);
 
 const PORT = process.env.PORT || 5001;
 

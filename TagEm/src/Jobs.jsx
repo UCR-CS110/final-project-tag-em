@@ -1,75 +1,104 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Jobs.css";
 
-const connections = [
-  "Backend",
-  "Frontend",
-  "UI/UX",
-  "-------------------",
-  "Daniyal Bhat",
-  "Gabriel Allaf",
-  "Jayanth Samala",
-  "..."
-];
-
-const startingJobs = [
-  {
-    id: 1,
-    title: "Frontend Developer Intern",
-    company: "TechBridge",
-    location: "Remote",
-    description: "Build React components and help improve the company dashboard.",
-    sender: "Gabriel Allaf",
-    taggedContacts: ["Jayanth Samala"],
-  },
-  {
-    id: 2,
-    title: "Software Engineering Intern",
-    company: "CloudWorks",
-    location: "Los Angeles",
-    description: "Work with backend APIs and database systems.",
-    sender: "Daniyal Bhat",
-    taggedContacts: ["Jayanth Samala"],
-  },
-];
-
 export default function Jobs() {
-  const [jobs, setJobs] = useState(startingJobs);
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const [jobs, setJobs] = useState([]);
+  const [connections, setConnections] = useState([]);
+  const [tags, setTags] = useState([]);
 
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedContacts, setSelectedContacts] = useState([]);
 
-  function handleContactChange(contact) {
-    if (selectedContacts.includes(contact)) {
-      setSelectedContacts(selectedContacts.filter((person) => person !== contact));
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
+  const [selectedTagTypes, setSelectedTagTypes] = useState([]);
+
+  useEffect(() => {
+    loadJobs();
+    loadOptions();
+  }, []);
+
+  async function loadJobs() {
+    const response = await fetch(`http://localhost:5001/api/jobs/${user.id}`);
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.log(data.message);
+      return;
+    }
+
+    setJobs(data);
+  }
+
+  async function loadOptions() {
+    const response = await fetch(
+      `http://localhost:5001/api/jobs/options/${user.id}`
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.log(data.message);
+      return;
+    }
+
+    setConnections(data.connections);
+    setTags(data.tags);
+  }
+
+  function handleUserChange(userId) {
+    if (selectedUserIds.includes(userId)) {
+      setSelectedUserIds(selectedUserIds.filter((id) => id !== userId));
     } else {
-      setSelectedContacts([...selectedContacts, contact]);
+      setSelectedUserIds([...selectedUserIds, userId]);
     }
   }
 
-  function handleSubmit(e) {
+  function handleTagChange(tagType) {
+    if (selectedTagTypes.includes(tagType)) {
+      setSelectedTagTypes(selectedTagTypes.filter((tag) => tag !== tagType));
+    } else {
+      setSelectedTagTypes([...selectedTagTypes, tagType]);
+    }
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    const newJob = {
-      id: Date.now(),
-      title,
-      company,
-      location,
-      description,
-      sender: "You",
-      taggedContacts: selectedContacts,
-    };
+    const response = await fetch("http://localhost:5001/api/jobs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        company,
+        location,
+        description,
+        sender_id: user.id,
+        selectedUserIds,
+        selectedTagTypes,
+      }),
+    });
 
-    setJobs([newJob, ...jobs]);
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.log(data.message);
+      return;
+    }
+
+    await loadJobs();
 
     setTitle("");
     setCompany("");
     setLocation("");
     setDescription("");
-    setSelectedContacts([]);
+    setSelectedUserIds([]);
+    setSelectedTagTypes([]);
   }
 
   return (
@@ -112,16 +141,32 @@ export default function Jobs() {
           />
 
           <div className="connections-box">
-            <h3>Tag connections who may be a good fit</h3>
+            <h3>Send to connections</h3>
 
-            {connections.map((contact) => (
-              <label className="connection-option" key={contact}>
+            {connections.map((connection) => (
+              <label className="connection-option" key={connection.id}>
                 <input
                   type="checkbox"
-                  checked={selectedContacts.includes(contact)}
-                  onChange={() => handleContactChange(contact)}
+                  checked={selectedUserIds.includes(connection.id)}
+                  onChange={() => handleUserChange(connection.id)}
                 />
-                {contact}
+                {connection.name}
+                {connection.tag_type && ` (${connection.tag_type})`}
+              </label>
+            ))}
+          </div>
+
+          <div className="connections-box">
+            <h3>Send to everyone with tag</h3>
+
+            {tags.map((tag) => (
+              <label className="connection-option" key={tag}>
+                <input
+                  type="checkbox"
+                  checked={selectedTagTypes.includes(tag)}
+                  onChange={() => handleTagChange(tag)}
+                />
+                {tag}
               </label>
             ))}
           </div>
@@ -154,7 +199,8 @@ export default function Jobs() {
 
               {job.taggedContacts.length > 0 && (
                 <p>
-                  <strong>Forwarded to:</strong> {job.taggedContacts.join(", ")}
+                  <strong>Forwarded to:</strong>{" "}
+                  {job.taggedContacts.join(", ")}
                 </p>
               )}
             </article>

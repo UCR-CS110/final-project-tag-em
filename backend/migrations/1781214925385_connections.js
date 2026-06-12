@@ -34,6 +34,9 @@ export const up = (pgm) => {
       type: "timestamp",
       default: pgm.func("current_timestamp"),
     },
+    tagType: {
+      type: "text",
+    }
   });
 };
 

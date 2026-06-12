@@ -6,6 +6,8 @@ import Connections from "./Connections.jsx";
 import Profile from "./Profile.jsx";
 import Login from "./Pages/Login.jsx";
 import Signup from "./Pages/Signup.jsx";
+import Admin from "./Admin.jsx"
+import MeetupDetails from "./MeetupDetails.jsx";
 
 import "./App.css"
 
@@ -14,7 +16,8 @@ function NavBar() {
     const navigate = useNavigate(); 
     const [imgURL, setImgURL] = useState("");
     
-    const [loggingOut, setLoggingOut] = useState(false); 
+    const [loggingOut, setLoggingOut] = useState(false);
+    const user = JSON.parse(localStorage.getItem("user"));
 
     useEffect(() => {
         async function handleFetch() {
@@ -49,6 +52,7 @@ function NavBar() {
                 <Link to="/Meetups">Meetups</Link>
                 <Link to="/Connections">Connections</Link>
                 <Link to="/Profile">Profile</Link>
+                {user?.is_admin && <Link to="/Admin">Admin</Link>}
             </div>
             
             <div className="profile-menu">
@@ -75,9 +79,11 @@ export default function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/Jobs" element={<Jobs />}/>
                 <Route path="/Meetups" element={<Meetups />}/>
+                <Route path="/Meetups/:id" element={<MeetupDetails />} />
                 <Route path="/Connections" element={<Connections />}/>
                 <Route path="/Profile" element={<Profile />}/>
                 <Route path="/Profile/:id" element={<Profile />}/>
+                <Route path="/Admin" element={<Admin />} />
             </Routes>
         </BrowserRouter>
     );

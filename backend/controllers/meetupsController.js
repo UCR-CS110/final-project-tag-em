@@ -17,17 +17,51 @@ export async function getMeetups(req, res) {
 
 export async function getMeetupById(req, res) {
   const { id } = req.params;
-
   try {
-    const result = await pool.query("SELECT * FROM meetups WHERE id = $1", [id]);
-
+    const result = await pool.query(
+      `
+      SELECT 
+        meetups.*, 
+        users.name AS event_creator_name
+      FROM meetups
+      JOIN users 
+      ON meetups.event_creator_id = users.id
+      WHERE meetups.id = $1
+      `,
+      [id]
+    );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Meetup not found" });
     }
-
     res.status(200).json(result.rows[0]);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to get meetup" });
+  }
+}
+
+export async function getSuggestedMeetups(req, res) {
+  const { location, currentMeetupId } = req.params;
+  try {
+    const result = await pool.query(
+      `
+      SELECT 
+        meetups.*, 
+        users.name AS event_creator_name
+      FROM meetups
+      JOIN users 
+      ON meetups.event_creator_id = users.id
+      WHERE LOWER(meetups.event_location) = LOWER($1)
+      AND meetups.id != $2
+      ORDER BY meetups.event_date ASC
+      LIMIT 5
+      `,
+      [location, currentMeetupId]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to get suggested meetups" });
   }
 }
 
@@ -39,7 +73,6 @@ export async function createMeetup(req, res) {
     event_bio,
     event_creator_id,
   } = req.body;
-
   try {
     const result = await pool.query(
       `INSERT INTO meetups 
@@ -52,14 +85,13 @@ export async function createMeetup(req, res) {
 
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.log(error); // Always log the error so you can see it in your terminal!
+    console.log(error);
     res.status(500).json({ error: "Failed to create meetup" });
   }
 }
 
 export async function updateMeetup(req, res) {
   const { id } = req.params;
-
   const {
     event_name,
     event_location,
@@ -67,7 +99,6 @@ export async function updateMeetup(req, res) {
     event_bio,
     event_creator_id,
   } = req.body;
-
   try {
     const result = await pool.query(
       `UPDATE meetups
@@ -81,30 +112,26 @@ export async function updateMeetup(req, res) {
        RETURNING *`,
       [event_name, event_location, event_date, event_bio, event_creator_id, id]
     );
-
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Meetup not found" });
     }
-
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to update meetup" });
   }
 }
+
 export async function deleteMeetup(req, res) {
   const { id } = req.params;
-
   try {
     const result = await pool.query(
       "DELETE FROM meetups WHERE id = $1 RETURNING *",
       [id]
     );
-
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Meetup not found" });
     }
-
     res.status(200).json({ message: "Meetup deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete meetup" });

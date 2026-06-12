@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./Meetups.css";
 
 export default function Meetups() {
@@ -118,21 +119,15 @@ export default function Meetups() {
       <section className="meetup-list">
         {filteredMeetups.length > 0 ? (
           filteredMeetups.map((meetup) => (
-            <article className="meetup-card" key={meetup.id}>
-              <h2>{meetup.event_name}</h2>
-              <p>
-                <strong>Location:</strong> {meetup.event_location}
-              </p>
-              <p>
-                <strong>Date:</strong> {meetup.event_date.slice(0, 10)}
-              </p>
-              <p>
-                <strong>Description:</strong> {meetup.event_bio}
-              </p>
-              <p>
-                <strong>Creator:</strong> {meetup.event_creator_name}
-              </p>
-            </article>
+            <Link to={`/Meetups/${meetup.id}`} className="meetup-card-link" key={meetup.id} >
+              <article className="meetup-card">
+                <h2>{meetup.event_name}</h2>
+                <p><strong>Location:</strong> {meetup.event_location}</p>
+                <p><strong>Date:</strong> {meetup.event_date.slice(0, 10)}</p>
+                <p><strong>Description:</strong> {meetup.event_bio}</p>
+                <p><strong>Creator:</strong> {meetup.event_creator_name}</p>
+              </article>
+            </Link>
           ))
         ) : (
           <p className="no-meetups">No meetups found.</p>

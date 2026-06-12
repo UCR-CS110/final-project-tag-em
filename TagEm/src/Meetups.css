@@ -116,3 +116,8 @@
 .create-meetup-form button:hover {
   background-color: #005fcc;
 }
+
+.meetup-card-link {
+  text-decoration: none;
+  color: inherit;
+}
