@@ -21,13 +21,16 @@ We recommend installing from the interactive installer on the PostgreSQL website
 <ul>DB_PORT</ul>
 <ul>DB_NAME</ul>
 <ul>DATABASE_URL  ("a sample assignment for this is: postgresql://DB_USER:DB_PASSWORD@DB_HOST:DB_PORT/DB_NAME") </ul> 
-<p>Next, open two terminals, one from the backend (Directory labeled "backend"), and one from the frontend (Directory labelled "TagEm"), then, run the following commands:</p>
+<ul>GOOGLE_CLIENT_ID=500493451470-a7d8cn2ve1v61mml864v6r228thggmbi.apps.googleusercontent.com</ul>
+<ul>GOOGLE_CLIENT_SECRET=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</ul>
+<p><b>We recognize it is terrible practice to include both the Client ID and Client Secret, this is done solely for proper usage of local deployments. In real deployment, these would not be pubicly shared. </b>Next, open two terminals, one from the backend (Directory labeled "backend"), and one from the frontend (Directory labelled "TagEm"), then, run the following commands:</p>
 <p>Frontend:</p>
 <ul>"npm install" </ul>
 <ul>"npm run dev" </ul>
 
 <p>Backend:</p>
 <ul>"npm install"</ul>
+<ul>"npm install passport-google-oauth20" </ul>
 <ul>"npm run migrate:up"</ul>
 <ul>"npm run dev" </ul>
 

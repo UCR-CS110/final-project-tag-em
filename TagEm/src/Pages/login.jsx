@@ -1,5 +1,5 @@
-import { Link, useNavigate  } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "./Auth.css";
 
 function Login() {
@@ -7,15 +7,28 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  async function handleSubmit(e){
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const userParam = params.get("user");
+    if (userParam) {
+      try {
+        const user = JSON.parse(userParam);
+        localStorage.setItem("user", JSON.stringify(user));
+        window.history.replaceState({}, document.title, "/Profile");
+        window.location.href = "/Profile";
+      } catch (err) {
+        console.error("Failed to parse Google user data", err);
+        setError("Google login failed. Please try again.");
+      }
+    }
+  }, []); 
+
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
-    const userInfo = {
-      email,
-      password
-    };
-
+    const userInfo = { email, password };
     const API_URL = "http://localhost:5001/api/auth/login";
     try{
       const response = await fetch(API_URL,{
@@ -31,13 +44,15 @@ function Login() {
         return;
       }
       localStorage.setItem("user", JSON.stringify(data));
-      console.log("hi");
       navigate("/Profile");
     } catch(err) {
       console.log("Error sending data:", err);
       setError("An error occurred. Please recheck your login credentials and try again.");
     }
   }
+  
+  const handleGoogleLogin = () => {window.location.href = "http://localhost:5001/api/auth/google";};
+
   return (
     <div className="auth-page">
       <div className="auth-card">
@@ -64,6 +79,13 @@ function Login() {
 
           <button type="submit">Log In</button>
         </form>
+
+        <div style={{ textAlign: "center", margin: "15px 0" }}>
+            <p>— OR —</p>
+            <button className="auth-card" type="button" onClick={handleGoogleLogin}>
+              Log in with Google
+            </button>
+        </div>
 
         <p className="auth-switch">
           Dont have an account? <Link to="/signup">Create one</Link>
