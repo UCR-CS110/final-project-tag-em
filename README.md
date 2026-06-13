@@ -52,4 +52,4 @@ For our database:
 <ul>PostgreSQLFor and node-pg-migrate.</ul> 
 
 <h1> Details on AI usage </h1>
-We used Generative AI for our CSS styling, and for initially learning how to work with the pg library. We also used it to turn our database SQL schemas into backend migration files. We also used it heavily to troubleshoot backend errors.
+We used Generative AI for our CSS styling, and for initially learning how to work with the pg library. We also used it to turn our database SQL schemas into a backend migration file, and heavily to troubleshoot backend errors.
