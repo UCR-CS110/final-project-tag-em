@@ -1,8 +1,14 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/c4wSHrp5)
 [![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=23901319&assignment_repo_type=AssignmentRepo)
 
-<h1> Project Description & Working Sections</h1>
+<h1> Project Description </h1>
 Tag'em is a networking platform that helps recruiters easily match good fit candidates with job postings. It works by creating an interface where users can privately “tag” people into fits that they would be good for based on their personal knowledge of the connection. Then, when recruiters are looking for hirees, they are able to selectively broadcast their positional opening to good fits within their network.
+
+<h1> Team Member Contributions</h1>
+Jayanth was responsible for the meetups frontend and backend, Gabriel was responsible for the profile frontend and backend, Daniel was responsible for the connections frontend and backend. We all worked on the Jobs page and tagging, Admin role, and authorization together.
+
+<h1> Feature List </h1>
+Tag'em currently has a regular login using an email and password and a google oauth login.
 
 <h1> Deployment Instructions </h1>
 In order to deploy our code, first you must have PostgreSQL installed on your machine.
@@ -14,7 +20,7 @@ We recommend installing from the interactive installer on the PostgreSQL website
 
 <h3> Cloning the Repo and Setup
 </h3>
-<p>From here, simply clone the repo and set up your .ENV file as a loose file in the backend folder. <b>Important to note, in your .env file you will want to have these variables defined:</b></p>
+<p>From here, simply clone the repo and set up your .env file as a loose file in the backend folder. <b>Important to note, in your .env file you will want to have these variables defined:</b></p>
 <ul>DB_USER</ul>
 <ul>DB_PASSWORD</ul>
 <ul>DB_HOST</ul>
@@ -44,3 +50,6 @@ For our backend development:
 <ul>- Node.js, Express, Multer, Bcrypt, Google OAuth, and Passport.</ul>
 For our database:
 <ul>PostgreSQLFor and node-pg-migrate.</ul> 
+
+<h1> Details on AI usage </h1>
+We used Generative AI for our CSS Styling, and to learn how to work with new frameworks like the pg library. We also used it heavily to troubleshoot backend errors.
