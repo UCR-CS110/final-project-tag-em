@@ -33,7 +33,6 @@ We recommend installing from the interactive installer on the PostgreSQL website
 <p>Frontend:</p>
 <ul>"npm install" </ul>
 <ul>"npm run dev" </ul>
-
 <p>Backend:</p>
 <ul>"npm install"</ul>
 <ul>"npm run migrate:up"</ul>
