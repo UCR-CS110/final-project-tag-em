@@ -5,10 +5,10 @@
 Tag'em is a networking platform that helps recruiters easily match good fit candidates with job postings. It works by creating an interface where users can privately “tag” people into fits that they would be good for based on their personal knowledge of the connection. Then, when recruiters are looking for hirees, they are able to selectively broadcast their positional opening to good fits within their network.
 
 <h1> Team Member Contributions</h1>
-Jayanth was responsible for the meetups frontend and backend, Gabriel was responsible for the profile frontend and backend, Daniel was responsible for the connections frontend and backend. We all worked on the Jobs page and tagging, Admin role, and authorization together.
+Jayanth was responsible for the meetups frontend and backend, Gabriel was responsible for the profile frontend and backend, Daniel was responsible for the connections frontend and backend. We all worked on the Jobs page, tagging, Admin role, and authorization together.
 
 <h1> Feature List </h1>
-Tag'em currently has a regular login using an email and password and a google oauth login.
+Tag'em currently has a regular login using an email and password and a google oauth login. Once logged in, there are 4 pages, Profile, Connections, Meetups, Jobs, and Admin (if you are logged in as an admin account). In the profile page, you can update profile picture, Name, Bio, Resume, and make a blog post. On the Connections page, you can search for individuals on the app using the search bar, and send a connection request to them if you wish. You can also accept connection requests, and give connections a personal tag here. Then, there is the meetups page. Here you can post a meetup with name, location, date, and description fields, which once posted can be seen by all Tag'em users. Meetups can be filtered throught the top search bar by name, location, and date. When you click on a meetup, other meetups happening at the same location are also recommended to you. In the Jobs page, you can make a job posting with the job title, company, location, and job details. When you create a job posting, you broadcast it to your choice of connections, whom you can filter by your personalized tags, so you are easily able to send job postings to people in your network who are good fits for the role. Finally there is the Admin page. If you are the admin, you are able to reset and repopulate the database.
 
 <h1> Deployment Instructions </h1>
 In order to deploy our code, first you must have PostgreSQL installed on your machine.
