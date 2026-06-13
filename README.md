@@ -30,7 +30,6 @@ We recommend installing from the interactive installer on the PostgreSQL website
 
 <p>Backend:</p>
 <ul>"npm install"</ul>
-<ul>"npm install passport-google-oauth20" </ul>
 <ul>"npm run migrate:up"</ul>
 <ul>"npm run dev" </ul>
 
@@ -42,6 +41,6 @@ This will provide a locally hosted link to view your local deployment of our web
 For our frontend development:
 <ul> - React, React-Router. </ul>
 For our backend development:
-<ul>- Node.js, Express, Multer, Bcrypt, and Passport.</ul>
+<ul>- Node.js, Express, Multer, Bcrypt, Google OAuth, and Passport.</ul>
 For our database:
 <ul>PostgreSQLFor and node-pg-migrate.</ul> 
