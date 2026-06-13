@@ -22,7 +22,6 @@ export const up = async (pgm) => {
     },
     password: {
       type: "varchar(255)",
-      notNull: true,
     },
     name: {
       type: "varchar(255)",
