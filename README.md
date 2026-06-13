@@ -14,22 +14,22 @@ We recommend installing from the interactive installer on the PostgreSQL website
 
 <h3> Cloning the Repo and Setup
 </h3>
-From here, simply clone the repo and set up your .ENV file as a loose file in the backend folder. <b>Important to note, in your .env file you will want to have these variables defined:</b>
+<p>From here, simply clone the repo and set up your .ENV file as a loose file in the backend folder. <b>Important to note, in your .env file you will want to have these variables defined:</b></p>
 <ul>DB_USER</ul>
 <ul>DB_PASSWORD</ul>
 <ul>DB_HOST</ul>
 <ul>DB_PORT</ul>
 <ul>DB_NAME</ul>
-<ul>DATABASE_URL  (a sample assignment for this is: postgresql://DB_USER:DB_PASSWORD@DB_HOST:DB_PORT/DB_NAME) </ul> 
-Next, open two terminals, one from the backend (Directory labeled "backend"), and one from the frontend (Directory labelled "TagEm"), then, run the following commands:
-Frontend:
+<ul>DATABASE_URL  ("a sample assignment for this is: postgresql://DB_USER:DB_PASSWORD@DB_HOST:DB_PORT/DB_NAME") </ul> 
+<p>Next, open two terminals, one from the backend (Directory labeled "backend"), and one from the frontend (Directory labelled "TagEm"), then, run the following commands:</p>
+<p>Frontend:</p>
 <ul>"npm install" </ul>
-</ul>"npm run dev" </ul>
+<ul>"npm run dev" </ul>
 
-Backend:
+<p>Backend:</p>
 <ul>"npm install"</ul>
 <ul>"npm run migrate:up"</ul>
-</ul>"npm run dev" </ul>
+<ul>"npm run dev" </ul>
 
 You can now use TagEm by pasting the localhost link given to you in the frontend terminal into your local browser.
 
